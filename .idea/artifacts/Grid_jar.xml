@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Grid:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Grid_jar</output-path>
+    <root id="archive" name="Grid.jar">
+      <element id="module-output" name="Grid" />
+    </root>
+  </artifact>
+</component>

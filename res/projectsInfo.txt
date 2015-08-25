@@ -1,0 +1,60 @@
+Bitcoin Utopia
+Money generating
+http://www.bitcoinutopia.net/bitcoinutopia/
+Crowd-donations for incentive awards and science projects.
+Einstein@Home
+Astrophysics
+http://einstein.phys.uwm.edu/
+Search astrophysical signals from neutron stars to find gravitational waves predicted by Einstein.
+MilkyWay@home
+Astrophysics
+http://milkyway.cs.rpi.edu/milkyway/
+Create a highly accurate 3D model of the Milky Way galaxy.
+SETI@Home
+Astrophysics
+http://setiathome.berkeley.edu/
+Analyze radio signals from space to search for extraterrestrial life.
+GPUGRID
+Biology
+http://www.gpugrid.net/
+Perform molecular simulations to understand the function of proteins in health and disease.
+POEM@HOME
+Biology
+http://boinc.fzk.de/poem/
+Perform molecular simulations to understand the function of proteins in health and disease.
+Rosetta@Home
+Biology
+http://boinc.bakerlab.org/rosetta/
+Perform molecular simulations to understand the function of proteins in health and disease.
+The Lattice Project
+Biology
+http://boinc.umiacs.umd.edu/
+Research various biology related problems.
+MindModeling@Home
+Cognitive science
+http://mindmodeling.org/
+Cognitive process modeling to better understand the human mind.
+Climate Prediction
+Earth Sciences
+http://climateprediction.net/
+Run climate models to better understand climate change.
+Collatz Conjecture
+Mathematics
+http://boinc.thesonntags.com/collatz/
+Analyze the Collatz Conjecture in an attempt to disprove it.
+PrimeGrid
+Mathematics
+http://www.primegrid.com/
+Search for large primes and analyze their properties.
+Malaria Control
+Medicine
+http://www.malariacontrol.net/
+Analyze the epidemology and natural history of malaria.
+LHC@Home Classic
+Physics
+http://lhcathomeclassic.cern.ch/sixtrack/
+Perform calculations on particle physics.
+World Community Grid
+Umbrella project
+http://www.worldcommunitygrid.org/
+General research on health, poverty and sustainability by IBM.

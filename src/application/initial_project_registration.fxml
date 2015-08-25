@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+  <columnConstraints>
+    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+  </rowConstraints>
+   <children>
+      <Label text="Let's begin...">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
+      <Label text="Please, select a few projects you would like to contribute to:" GridPane.rowIndex="1">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
+         <content>
+            <GridPane fx:id="projectsPane">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints vgrow="SOMETIMES" />
+              </rowConstraints>
+               <padding>
+                  <Insets bottom="7.5" left="7.5" right="7.5" top="7.5" />
+               </padding>
+            </GridPane>
+         </content></ScrollPane>
+      <Button defaultButton="true" mnemonicParsing="false" onAction="#proceedButtonClicked" text="Proceed" GridPane.rowIndex="3" />
+   </children>
+   <padding>
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+   </padding>
+</GridPane>

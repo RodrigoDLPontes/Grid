@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<GridPane hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="325.0" prefWidth="487.5" vgap="10.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
+  <columnConstraints>
+    <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="20.0" prefWidth="20.0" />
+      <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="ALWAYS" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="ALWAYS" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Label text="Do work between" />
+      <ComboBox fx:id="workBetween1" prefWidth="150.0" GridPane.columnIndex="1">
+          <items>
+              <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="0:00" />
+                  <String fx:value="0:30" />
+                  <String fx:value="1:00" />
+                  <String fx:value="1:30" />
+                  <String fx:value="2:00" />
+                  <String fx:value="2:30" />
+                  <String fx:value="3:00" />
+                  <String fx:value="3:30" />
+                  <String fx:value="4:00" />
+                  <String fx:value="4:30" />
+                  <String fx:value="5:00" />
+                  <String fx:value="5:30" />
+                  <String fx:value="6:00" />
+                  <String fx:value="6:30" />
+                  <String fx:value="7:00" />
+                  <String fx:value="7:30" />
+                  <String fx:value="8:00" />
+                  <String fx:value="8:30" />
+                  <String fx:value="9:00" />
+                  <String fx:value="9:30" />
+                  <String fx:value="10:00" />
+                  <String fx:value="10:30" />
+                  <String fx:value="11:00" />
+                  <String fx:value="11:30" />
+                  <String fx:value="12:00" />
+                  <String fx:value="12:30" />
+                  <String fx:value="13:00" />
+                  <String fx:value="13:30" />
+                  <String fx:value="14:00" />
+                  <String fx:value="14:30" />
+                  <String fx:value="15:00" />
+                  <String fx:value="15:30" />
+                  <String fx:value="16:00" />
+                  <String fx:value="16:30" />
+                  <String fx:value="17:00" />
+                  <String fx:value="17:30" />
+                  <String fx:value="18:00" />
+                  <String fx:value="18:30" />
+                  <String fx:value="19:00" />
+                  <String fx:value="19:30" />
+                  <String fx:value="20:00" />
+                  <String fx:value="20:30" />
+                  <String fx:value="21:00" />
+                  <String fx:value="21:30" />
+                  <String fx:value="22:00" />
+                  <String fx:value="22:30" />
+                  <String fx:value="23:00" />
+                  <String fx:value="23:30" />
+              </FXCollections>
+          </items>
+      </ComboBox>
+      <Label text="and" GridPane.columnIndex="2" />
+      <ComboBox fx:id="workBetween2" prefWidth="150.0" GridPane.columnIndex="3">
+          <items>
+              <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="0:00" />
+                  <String fx:value="0:30" />
+                  <String fx:value="1:00" />
+                  <String fx:value="1:30" />
+                  <String fx:value="2:00" />
+                  <String fx:value="2:30" />
+                  <String fx:value="3:00" />
+                  <String fx:value="3:30" />
+                  <String fx:value="4:00" />
+                  <String fx:value="4:30" />
+                  <String fx:value="5:00" />
+                  <String fx:value="5:30" />
+                  <String fx:value="6:00" />
+                  <String fx:value="6:30" />
+                  <String fx:value="7:00" />
+                  <String fx:value="7:30" />
+                  <String fx:value="8:00" />
+                  <String fx:value="8:30" />
+                  <String fx:value="9:00" />
+                  <String fx:value="9:30" />
+                  <String fx:value="10:00" />
+                  <String fx:value="10:30" />
+                  <String fx:value="11:00" />
+                  <String fx:value="11:30" />
+                  <String fx:value="12:00" />
+                  <String fx:value="12:30" />
+                  <String fx:value="13:00" />
+                  <String fx:value="13:30" />
+                  <String fx:value="14:00" />
+                  <String fx:value="14:30" />
+                  <String fx:value="15:00" />
+                  <String fx:value="15:30" />
+                  <String fx:value="16:00" />
+                  <String fx:value="16:30" />
+                  <String fx:value="17:00" />
+                  <String fx:value="17:30" />
+                  <String fx:value="18:00" />
+                  <String fx:value="18:30" />
+                  <String fx:value="19:00" />
+                  <String fx:value="19:30" />
+                  <String fx:value="20:00" />
+                  <String fx:value="20:30" />
+                  <String fx:value="21:00" />
+                  <String fx:value="21:30" />
+                  <String fx:value="22:00" />
+                  <String fx:value="22:30" />
+                  <String fx:value="23:00" />
+                  <String fx:value="23:30" />
+              </FXCollections>
+          </items>
+      </ComboBox>
+      <Label text="Connect to internet between" GridPane.rowIndex="1" />
+      <ComboBox fx:id="internetBetween1" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+          <items>
+              <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="0:00" />
+                  <String fx:value="0:30" />
+                  <String fx:value="1:00" />
+                  <String fx:value="1:30" />
+                  <String fx:value="2:00" />
+                  <String fx:value="2:30" />
+                  <String fx:value="3:00" />
+                  <String fx:value="3:30" />
+                  <String fx:value="4:00" />
+                  <String fx:value="4:30" />
+                  <String fx:value="5:00" />
+                  <String fx:value="5:30" />
+                  <String fx:value="6:00" />
+                  <String fx:value="6:30" />
+                  <String fx:value="7:00" />
+                  <String fx:value="7:30" />
+                  <String fx:value="8:00" />
+                  <String fx:value="8:30" />
+                  <String fx:value="9:00" />
+                  <String fx:value="9:30" />
+                  <String fx:value="10:00" />
+                  <String fx:value="10:30" />
+                  <String fx:value="11:00" />
+                  <String fx:value="11:30" />
+                  <String fx:value="12:00" />
+                  <String fx:value="12:30" />
+                  <String fx:value="13:00" />
+                  <String fx:value="13:30" />
+                  <String fx:value="14:00" />
+                  <String fx:value="14:30" />
+                  <String fx:value="15:00" />
+                  <String fx:value="15:30" />
+                  <String fx:value="16:00" />
+                  <String fx:value="16:30" />
+                  <String fx:value="17:00" />
+                  <String fx:value="17:30" />
+                  <String fx:value="18:00" />
+                  <String fx:value="18:30" />
+                  <String fx:value="19:00" />
+                  <String fx:value="19:30" />
+                  <String fx:value="20:00" />
+                  <String fx:value="20:30" />
+                  <String fx:value="21:00" />
+                  <String fx:value="21:30" />
+                  <String fx:value="22:00" />
+                  <String fx:value="22:30" />
+                  <String fx:value="23:00" />
+                  <String fx:value="23:30" />
+              </FXCollections>
+          </items>
+      </ComboBox>
+      <Label text="and" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <ComboBox fx:id="internetBetween2" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+          <items>
+              <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="0:00" />
+                  <String fx:value="0:30" />
+                  <String fx:value="1:00" />
+                  <String fx:value="1:30" />
+                  <String fx:value="2:00" />
+                  <String fx:value="2:30" />
+                  <String fx:value="3:00" />
+                  <String fx:value="3:30" />
+                  <String fx:value="4:00" />
+                  <String fx:value="4:30" />
+                  <String fx:value="5:00" />
+                  <String fx:value="5:30" />
+                  <String fx:value="6:00" />
+                  <String fx:value="6:30" />
+                  <String fx:value="7:00" />
+                  <String fx:value="7:30" />
+                  <String fx:value="8:00" />
+                  <String fx:value="8:30" />
+                  <String fx:value="9:00" />
+                  <String fx:value="9:30" />
+                  <String fx:value="10:00" />
+                  <String fx:value="10:30" />
+                  <String fx:value="11:00" />
+                  <String fx:value="11:30" />
+                  <String fx:value="12:00" />
+                  <String fx:value="12:30" />
+                  <String fx:value="13:00" />
+                  <String fx:value="13:30" />
+                  <String fx:value="14:00" />
+                  <String fx:value="14:30" />
+                  <String fx:value="15:00" />
+                  <String fx:value="15:30" />
+                  <String fx:value="16:00" />
+                  <String fx:value="16:30" />
+                  <String fx:value="17:00" />
+                  <String fx:value="17:30" />
+                  <String fx:value="18:00" />
+                  <String fx:value="18:30" />
+                  <String fx:value="19:00" />
+                  <String fx:value="19:30" />
+                  <String fx:value="20:00" />
+                  <String fx:value="20:30" />
+                  <String fx:value="21:00" />
+                  <String fx:value="21:30" />
+                  <String fx:value="22:00" />
+                  <String fx:value="22:30" />
+                  <String fx:value="23:00" />
+                  <String fx:value="23:30" />
+              </FXCollections>
+          </items>
+      </ComboBox>
+      <Label text="Use no more than" GridPane.rowIndex="2" />
+      <ComboBox fx:id="hddSpace" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+          <items>
+              <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="100MB" />
+                  <String fx:value="250MB" />
+                  <String fx:value="500MB" />
+                  <String fx:value="1GB" />
+                  <String fx:value="2GB" />
+                  <String fx:value="5GB" />
+                  <String fx:value="10GB" />
+                  <String fx:value="25GB" />
+                  <String fx:value="50GB" />
+                  <String fx:value="100GB" />
+              </FXCollections>
+          </items>
+      </ComboBox>
+      <Label text="of hard drive space." GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+      <Label text="Use no more than" GridPane.rowIndex="3" />
+      <ComboBox fx:id="cpuPercent" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+          <items>
+              <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="10%" />
+                  <String fx:value="20%" />
+                  <String fx:value="30%" />
+                  <String fx:value="40%" />
+                  <String fx:value="50%" />
+                  <String fx:value="60%" />
+                  <String fx:value="70%" />
+                  <String fx:value="80%" />
+                  <String fx:value="90%" />
+                  <String fx:value="100%" />
+              </FXCollections>
+          </items>
+      </ComboBox>
+      <Label text="of the processor." GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+      <Label text="Do work while on batteries?" GridPane.rowIndex="4" />
+      <CheckBox fx:id="workOnBatteries" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <Label text="Do work after idle for" GridPane.rowIndex="5" />
+      <ComboBox fx:id="idleTime" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+          <items>
+              <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="0 (Run always)" />
+                  <String fx:value="5" />
+                  <String fx:value="10" />
+                  <String fx:value="15" />
+                  <String fx:value="30" />
+                  <String fx:value="60" />
+              </FXCollections>
+          </items>
+      </ComboBox>
+      <Label text="minutes." GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+      <GridPane hgap="10.0" GridPane.columnSpan="4" GridPane.rowIndex="6">
+        <columnConstraints>
+          <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button cancelButton="true" mnemonicParsing="false" onAction="#cancelClicked" text="Cancel" />
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#okClicked" text="OK" GridPane.columnIndex="1" />
+         </children>
+      </GridPane>
+   </children>
+</GridPane>

@@ -1,0 +1,71 @@
+.root {
+	-fx-background: #262626;
+	-fx-control-inner-background: #cccccc;
+	-fx-accent: #409fbf;
+	-fx-default-button: #a6ccd9;
+	-fx-focus-color: #b3d9e6;
+	-fx-faint-focus-color: #b3d9e633
+}
+
+.label {
+	-fx-text-fill: white
+}
+
+.check-box {
+	-fx-text-fill: white
+}
+
+.scroll-pane {
+	-fx-background: #262626;
+	-fx-border-color: #1a1a1a;
+	-fx-focus-color: #262626
+}
+
+.scroll-bar {
+	-fx-background-color: #262626
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+	visibility: hidden;
+	-fx-padding: 1, 0, 0, 0;
+}
+
+.scroll-bar .increment-button .increment-arrow,
+.scroll-bar .decrement-button .decrement-arrow {
+    visibility: hidden
+}
+
+.tab-pane {
+	-fx-background: #262626
+}
+
+.tab {
+	-fx-background-color: #4d4d4d;
+	-fx-focus-color: transparent
+}
+
+.tab-label {
+	-fx-text-fill: white
+}
+
+
+.tab:selected {
+	-fx-background-color: #808080
+}
+
+.menu-bar {
+	-fx-background-color: #666666
+}
+
+.context-menu {
+	-fx-background-color: #808080
+}
+
+.menu > .label {
+	-fx-text-fill: white
+}
+
+#progress-bar-label {
+	-fx-text-fill: black
+}

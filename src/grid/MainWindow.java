@@ -1,5 +1,9 @@
 package grid;
 
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -19,6 +23,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
@@ -47,7 +52,7 @@ public class MainWindow {
 			loader.setLocation(getClass().getResource("main_window.fxml"));
 			loader.setController(new Controller());
 			Parent root = loader.load();
-			Undecorator frame = new Undecorator(stage, (Region)root);
+			Undecorator frame = new Undecorator(stage, (Region) root);
 			frame.getStylesheets().add("skin/undecorator.css");
 			frame.getStylesheets().add("grid/grid_undecorator.css");
 			Scene scene = new Scene(frame, 600, 400);
@@ -56,7 +61,7 @@ public class MainWindow {
 			stage.setScene(scene);
 			stage.initStyle(StageStyle.TRANSPARENT);
 			stage.show();
-		} catch (Exception e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -141,7 +146,7 @@ public class MainWindow {
 						}
 					}
 					//Display tasks
-					for (Result task : tasks) {
+					for(Result task : tasks) {
 						GridPane taskPane = new GridPane();
 						if(task.active_task && !task.suspended_via_gui && task.active_task_state != 0)
 							taskPane.setId("selected-pane");
@@ -150,19 +155,21 @@ public class MainWindow {
 						ColumnConstraints column1 = new ColumnConstraints();
 						column1.setPercentWidth(50);
 						ColumnConstraints column2 = new ColumnConstraints();
-						column2.setPercentWidth(25);
+						column2.setPercentWidth(30);
 						ColumnConstraints column3 = new ColumnConstraints();
-						column3.setPercentWidth(25);
+						column3.setPercentWidth(20);
 						taskPane.getColumnConstraints().addAll(column1, column2, column3);
-						taskPane.setPadding(new Insets(5));
+						taskPane.setPadding(new Insets(0, 5, 3, 5));
 						taskPane.setOnMouseClicked(new PaneEventHandler());
 						GridPane.setHgrow(taskPane, Priority.ALWAYS);
 						Label projectLabel = new Label(getProjectName(task.project_url));
-						projectLabel.setFont(new Font(18));
+						projectLabel.setFont(new Font(20));
 						taskPane.add(projectLabel, 0, 0);
 						Label taskName = new Label(task.name);
+						taskName.setFont(new Font(10));
 						taskPane.add(taskName, 0, 1);
 						ProgressBar progressBar = new ProgressBar();
+						progressBar.setPrefWidth(150);
 						progressBar.setProgress(task.fraction_done);
 						GridPane.setValignment(progressBar, VPos.CENTER);
 						GridPane.setHalignment(progressBar, HPos.CENTER);
@@ -193,7 +200,7 @@ public class MainWindow {
 				public void run() {
 					int yRow = 0;
 					projectsPane.getChildren().remove(0, projectsPane.getChildren().size());
-					for (Project project : Grid.rpcClient.getProjectStatus()) {
+					for(Project project : Grid.rpcClient.getProjectStatus()) {
 						GridPane projectPane = new GridPane();
 						projectPane.setBackground(new Background(new BackgroundFill(Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY)));
 						ColumnConstraints column1 = new ColumnConstraints();
@@ -206,7 +213,7 @@ public class MainWindow {
 						Label projectLabel = new Label(project.project_name);
 						projectLabel.setFont(new Font(18));
 						projectPane.add(projectLabel, 0, 0);
-						Label creditLabel = new Label(String.valueOf((int)project.user_total_credit));
+						Label creditLabel = new Label(String.valueOf((int) project.user_total_credit));
 						creditLabel.setFont(new Font(18));
 						GridPane.setHalignment(creditLabel, HPos.RIGHT);
 						projectPane.add(creditLabel, 1, 0);
@@ -223,56 +230,93 @@ public class MainWindow {
 		public void handle(MouseEvent event) {
 			if(event.getSource() instanceof GridPane) {
 				if(event.getClickCount() == 2) {
-					if(((GridPane)event.getSource()).getId().equals("selected-pane")) {
-						((GridPane)event.getSource()).setId("unselected-pane");
-						setTaskState(RpcClient.RESULT_SUSPEND, ((Label)((GridPane)event.getSource()).getChildren().get(1)).getText());
+					if(((GridPane) event.getSource()).getId().equals("selected-pane")) {
+						((GridPane) event.getSource()).setId("unselected-pane");
+						setTaskState(RpcClient.RESULT_SUSPEND, ((Label) ((GridPane) event.getSource()).getChildren().get(1)).getText());
 					} else {
-						((GridPane)event.getSource()).setId("selected-pane");
+						((GridPane) event.getSource()).setId("selected-pane");
 						setTaskState(RpcClient.RESULT_RESUME, ((Label) ((GridPane) event.getSource()).getChildren().get(1)).getText());
 					}
 				} else if(event.isPopupTrigger()) {
 					ContextMenu contextMenu = new ContextMenu();
 					MenuItem item1;
-					if(((GridPane)event.getSource()).getBackground().getFills().get(0).getFill().equals(Color.LIGHTGRAY)) {
+					if(((GridPane) event.getSource()).getId().equals("selected-pane")) {
 						item1 = new MenuItem("Suspend");
 					} else {
 						item1 = new MenuItem("Resume");
 					}
-					item1.setOnAction(new MenuItemEventHandler());
+					item1.setOnAction(new MenuItemEventHandler((GridPane) event.getSource()));
 					MenuItem item2 = new MenuItem("Abort");
-					item2.setOnAction(new MenuItemEventHandler());
+					item2.setOnAction(new MenuItemEventHandler((GridPane) event.getSource()));
 					MenuItem item3 = new MenuItem("Project's HomePage");
-					item3.setOnAction(new MenuItemEventHandler());
+					item3.setOnAction(new MenuItemEventHandler((GridPane) event.getSource()));
 					contextMenu.getItems().addAll(item1, item2, item3);
-					contextMenu.show((GridPane)event.getSource(), event.getScreenX(), event.getScreenY());
+					contextMenu.show((GridPane) event.getSource(), event.getScreenX(), event.getScreenY());
 				}
 			}
 		}
 	}
 
 	class MenuItemEventHandler implements EventHandler<ActionEvent> {
+
+		GridPane source;
+
+		public MenuItemEventHandler() {
+		}
+
+		public MenuItemEventHandler(GridPane source) {
+			this.source = source;
+		}
+
 		// TODO: Handle "Preferences"
 		public void handle(ActionEvent event) {
 			if(event.getSource() instanceof MenuItem) {
-				if(((MenuItem)event.getSource()).getText().equals("Resume activity")) {
-					((MenuItem)event.getSource()).setText("Suspend activity");
+				/*
+				Activity Menu
+				 */
+				if(((MenuItem) event.getSource()).getText().equals("Resume activity")) {
+					((MenuItem) event.getSource()).setText("Suspend activity");
 					Grid.rpcClient.setRunMode(2, 0);
-				} else if(((MenuItem)event.getSource()).getText().equals("Suspend activity")) {
-					((MenuItem)event.getSource()).setText("Resume activity");
+				} else if(((MenuItem) event.getSource()).getText().equals("Suspend activity")) {
+					((MenuItem) event.getSource()).setText("Resume activity");
 					Grid.rpcClient.setRunMode(3, 0);
-				} else if(((MenuItem)event.getSource()).getText().equals("Resume network activity")) {
-					((MenuItem)event.getSource()).setText("Suspend network activity");
+				} else if(((MenuItem) event.getSource()).getText().equals("Resume network activity")) {
+					((MenuItem) event.getSource()).setText("Suspend network activity");
 					Grid.rpcClient.setNetworkMode(2, 0);
-				} else if(((MenuItem)event.getSource()).getText().equals("Suspend network activity")) {
-					((MenuItem)event.getSource()).setText("Resume network activity");
+				} else if(((MenuItem) event.getSource()).getText().equals("Suspend network activity")) {
+					((MenuItem) event.getSource()).setText("Resume network activity");
 					Grid.rpcClient.setNetworkMode(3, 0);
-				} else if(((MenuItem)event.getSource()).getText().equals("Close")) {
+				/*
+				File Menu
+				 */
+				} else if(((MenuItem) event.getSource()).getText().equals("Close")) {
 					stage.close();
-				} else if(((MenuItem)event.getSource()).getText().equals("Exit")) {
-					while (!Grid.rpcClient.quit()) ;
+				} else if(((MenuItem) event.getSource()).getText().equals("Exit")) {
+					while(!Grid.rpcClient.quit()) ;
 					System.exit(0);
-				} else if(((MenuItem)event.getSource()).getText().equals("Preferences")) {
+				/*
+				Preferences
+				 */
+				} else if(((MenuItem) event.getSource()).getText().equals("Preferences")) {
 					new Preferences();
+				/*
+				Task's popup menu
+				 */
+				} else if(((MenuItem) event.getSource()).getText().equals("Resume")) {
+					source.setId("selected-pane");
+					setTaskState(RpcClient.RESULT_RESUME, ((Label) source.getChildren().get(1)).getText());
+				} else if(((MenuItem) event.getSource()).getText().equals("Suspend")) {
+					source.setId("unselected-pane");
+					setTaskState(RpcClient.RESULT_SUSPEND, ((Label) source.getChildren().get(1)).getText());
+				} else if(((MenuItem) event.getSource()).getText().equals("Abort")) {
+					source.setId("unselected-pane");
+					setTaskState(RpcClient.RESULT_ABORT, ((Label) source.getChildren().get(1)).getText());
+				} else if(((MenuItem) event.getSource()).getText().equals("Project's HomePage")) {
+					try {
+						Desktop.getDesktop().browse(getTaskURL(((Label) source.getChildren().get(1)).getText()));
+					} catch(IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -284,24 +328,39 @@ public class MainWindow {
 
 	/**
 	 * Get's project's name given task's URL, since it's not provided by BOINC
+	 *
 	 * @param taskUrl Task's URL
 	 * @return Project's name
 	 */
 	private String getProjectName(String taskUrl) {
-		for (Project project : Grid.rpcClient.getProjectStatus()) {
+		for(Project project : Grid.rpcClient.getProjectStatus()) {
 			if(taskUrl.equals(project.master_url))
 				return project.project_name;
 		}
 		return null;
 	}
 
+	private URI getTaskURL(String taskName) {
+		for(Result result : Grid.rpcClient.getResults()) {
+			if(taskName.equals(result.name))
+				try {
+					return new URI(result.project_url);
+				} catch(URISyntaxException e) {
+					e.printStackTrace();
+					return null;
+				}
+		}
+		return null;
+	}
+
 	/**
 	 * Sets task state
-	 * @param state State to be set (as found in RpcClient)
+	 *
+	 * @param state    State to be set (as found in RpcClient)
 	 * @param taskName Task's name
 	 */
 	private void setTaskState(int state, String taskName) {
-		for (Result result : Grid.rpcClient.getResults()) {
+		for(Result result : Grid.rpcClient.getResults()) {
 			if(taskName.equals(result.name))
 				Grid.rpcClient.resultOp(state, result.project_url, taskName);
 		}

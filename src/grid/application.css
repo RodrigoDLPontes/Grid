@@ -5,25 +5,25 @@
 	-fx-accent: #409fbf;
 	-fx-default-button: #a6ccd9;
 	-fx-focus-color: #94c2d1;
-	-fx-faint-focus-color: #94c2d133
+	-fx-faint-focus-color: #94c2d133;
 }
 
 .label {
-	-fx-text-fill: white
+	-fx-text-fill: white;
 }
 
 .check-box {
-	-fx-text-fill: white
+	-fx-text-fill: white;
 }
 
 .scroll-pane {
 	-fx-background: #262626;
 	-fx-border-color: #1a1a1a;
-	-fx-focus-color: #262626
+	-fx-focus-color: #262626;
 }
 
 .scroll-bar {
-	-fx-background-color: transparent
+	-fx-background-color: transparent;
 }
 
 .scroll-bar .increment-button,
@@ -34,55 +34,67 @@
 
 .scroll-bar .increment-button .increment-arrow,
 .scroll-bar .decrement-button .decrement-arrow {
-    visibility: hidden
+    visibility: hidden;
 }
 
 .tab-pane {
-	-fx-background: #262626
+	-fx-background: #262626;
+}
+
+.tab-pane > .tab-header-area > .tab-header-background {
+    -fx-background-color: #404040;
 }
 
 .tab {
-	-fx-background-color: #4d4d4d;
-	-fx-focus-color: transparent
+	-fx-background-color: #666666;
+	-fx-focus-color: transparent;
 }
 
 .tab-label {
-	-fx-text-fill: white
+	-fx-text-fill: white;
 }
 
 
 .tab:selected {
-	-fx-background-color: #808080
+	-fx-background-color: #b3b3b3;
 }
 
 .menu-bar {
-	-fx-background-color: #666666
+	-fx-background-color: transparent;
 }
 
 .context-menu {
-	-fx-background-color: #808080
+	-fx-background-color: #808080;
 }
 
 .menu > .label {
-	-fx-text-fill: white
+	-fx-text-fill: white;
+}
+
+.progress-bar > .track {
+    -fx-background-color: linear-gradient(to bottom, #33333385, #FFFFFF85);
+    -fx-background-insets: 1;
+    -fx-background-radius: 1.0em;
 }
 
 .progress-bar > .bar {
-	-fx-background-color: linear-gradient(to bottom, #808080, #4d4d4d)
+	-fx-background-color: linear-gradient(to bottom, #808080, #4d4d4d);
+	-fx-background-insets: 4;
+    -fx-background-radius: 4em;
 }
 
 #progress-bar-label {
-	-fx-text-fill: black
+	-fx-text-fill: black;
 }
 
 #selected-pane {
-	-fx-background-color: #b3b3b3
+	-fx-background-color: #b3b3b3;
 }
 
 #unselected-pane {
-	-fx-background-color: #666666
+	-fx-background-color: #666666;
 }
 
 #background {
-	-fx-background-color: linear-gradient(to bottom, #333333, #1a1a1a)
+	-fx-background-color: linear-gradient(to bottom, #333333, #1a1a1a);
 }

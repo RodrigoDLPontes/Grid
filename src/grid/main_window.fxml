@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -60,6 +61,6 @@
       </MenuBar>
    </children>
    <padding>
-      <Insets top="40.0" />
+      <Insets top="30.0" />
    </padding>
 </GridPane>

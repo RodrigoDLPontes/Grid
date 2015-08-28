@@ -1,16 +1,15 @@
-package application;
+package grid;
 
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import edu.berkeley.boinc.rpc.CcStatus;
 import edu.berkeley.boinc.rpc.Project;
 import edu.berkeley.boinc.rpc.Result;
+import edu.berkeley.boinc.rpc.RpcClient;
+import insidefx.undecorator.Undecorator;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -28,16 +27,11 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class MainWindow {
 
@@ -53,9 +47,14 @@ public class MainWindow {
 			loader.setLocation(getClass().getResource("main_window.fxml"));
 			loader.setController(new Controller());
 			Parent root = loader.load();
-			Scene scene = new Scene(root, 600, 400);
+			Undecorator frame = new Undecorator(stage, (Region)root);
+			frame.getStylesheets().add("skin/undecorator.css");
+			frame.getStylesheets().add("grid/grid_undecorator.css");
+			Scene scene = new Scene(frame, 600, 400);
 			scene.getStylesheets().add(getClass().getResource("application.css").toString());
+			scene.setFill(Color.TRANSPARENT);
 			stage.setScene(scene);
+			stage.initStyle(StageStyle.TRANSPARENT);
 			stage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -118,12 +117,36 @@ public class MainWindow {
 			Platform.runLater(new Runnable() {
 				public void run() {
 					int yRow = 0;
-					for (Result task : Grid.rpcClient.getResults()) {
+					tasksPane.getChildren().remove(0, tasksPane.getChildren().size());
+					ArrayList<Result> tasks = Grid.rpcClient.getResults();
+					//Simple alphabetical ordering
+					for(Result task : tasks) {
+						if(tasks.indexOf(task) != 0) {
+							for(int i = tasks.indexOf(task) - 1; i >= 0; i--) {
+								if(task.name.compareToIgnoreCase(tasks.get(i).name) < 0) {
+									Collections.swap(tasks, tasks.indexOf(task), i);
+								}
+							}
+						}
+					}
+					//Place active tasks first
+					int position = 5;
+					for(Result task : tasks) {
+						if(task.active_task && !task.suspended_via_gui && task.active_task_state != 0) {
+							for(int i = tasks.indexOf(task) - 1; i >= 0; i--) {
+								if(!(tasks.get(i).active_task && !tasks.get(i).suspended_via_gui && tasks.get(i).active_task_state != 0)) {
+									Collections.swap(tasks, tasks.indexOf(task), i);
+								}
+							}
+						}
+					}
+					//Display tasks
+					for (Result task : tasks) {
 						GridPane taskPane = new GridPane();
-						if(task.active_task && !task.suspended_via_gui && (task.active_task_state != 0))
-							taskPane.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+						if(task.active_task && !task.suspended_via_gui && task.active_task_state != 0)
+							taskPane.setId("selected-pane");
 						else
-							taskPane.setBackground(new Background(new BackgroundFill(Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY)));
+							taskPane.setId("unselected-pane");
 						ColumnConstraints column1 = new ColumnConstraints();
 						column1.setPercentWidth(50);
 						ColumnConstraints column2 = new ColumnConstraints();
@@ -157,10 +180,6 @@ public class MainWindow {
 						taskPane.add(deadlineLabel, 2, 0, 1, 2);
 						tasksPane.add(taskPane, 0, yRow);
 						yRow++;
-						Pane pane = new Pane();
-						pane.setMinHeight(7.5);
-						tasksPane.addRow(yRow, pane);
-						yRow++;
 					}
 				}
 			});
@@ -173,6 +192,7 @@ public class MainWindow {
 			Platform.runLater(new Runnable() {
 				public void run() {
 					int yRow = 0;
+					projectsPane.getChildren().remove(0, projectsPane.getChildren().size());
 					for (Project project : Grid.rpcClient.getProjectStatus()) {
 						GridPane projectPane = new GridPane();
 						projectPane.setBackground(new Background(new BackgroundFill(Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -192,10 +212,6 @@ public class MainWindow {
 						projectPane.add(creditLabel, 1, 0);
 						projectsPane.add(projectPane, 0, yRow);
 						yRow++;
-						Pane pane = new Pane();
-						pane.setMinHeight(7.5);
-						projectsPane.addRow(yRow, pane);
-						yRow++;
 					}
 				}
 			});
@@ -207,12 +223,12 @@ public class MainWindow {
 		public void handle(MouseEvent event) {
 			if(event.getSource() instanceof GridPane) {
 				if(event.getClickCount() == 2) {
-					if(((GridPane)event.getSource()).getBackground().getFills().get(0).getFill().equals(Color.LIGHTGRAY)) {
-						((GridPane)event.getSource()).setBackground(new Background(new BackgroundFill(Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY)));
-						setTaskState(10, ((Label)((GridPane)event.getSource()).getChildren().get(1)).getText());
+					if(((GridPane)event.getSource()).getId().equals("selected-pane")) {
+						((GridPane)event.getSource()).setId("unselected-pane");
+						setTaskState(RpcClient.RESULT_SUSPEND, ((Label)((GridPane)event.getSource()).getChildren().get(1)).getText());
 					} else {
-						((GridPane)event.getSource()).setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-						setTaskState(11, ((Label)((GridPane)event.getSource()).getChildren().get(1)).getText());
+						((GridPane)event.getSource()).setId("selected-pane");
+						setTaskState(RpcClient.RESULT_RESUME, ((Label) ((GridPane) event.getSource()).getChildren().get(1)).getText());
 					}
 				} else if(event.isPopupTrigger()) {
 					ContextMenu contextMenu = new ContextMenu();
@@ -262,6 +278,15 @@ public class MainWindow {
 		}
 	}
 
+	/*
+	Private helper methods
+	 */
+
+	/**
+	 * Get's project's name given task's URL, since it's not provided by BOINC
+	 * @param taskUrl Task's URL
+	 * @return Project's name
+	 */
 	private String getProjectName(String taskUrl) {
 		for (Project project : Grid.rpcClient.getProjectStatus()) {
 			if(taskUrl.equals(project.master_url))
@@ -270,6 +295,11 @@ public class MainWindow {
 		return null;
 	}
 
+	/**
+	 * Sets task state
+	 * @param state State to be set (as found in RpcClient)
+	 * @param taskName Task's name
+	 */
 	private void setTaskState(int state, String taskName) {
 		for (Result result : Grid.rpcClient.getResults()) {
 			if(taskName.equals(result.name))

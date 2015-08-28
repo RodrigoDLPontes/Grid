@@ -1,0 +1,35 @@
+.decoration-background{
+    -fx-fill: #1a1a1a;
+    -fx-arc-width:0px;
+    -fx-arc-height:0px
+}
+
+.decoration-shadow{
+    -fx-arc-width:0px;
+    -fx-arc-height:0px;
+}
+
+.decoration-button-menu{
+    visibility: hidden
+}
+
+.decoration-button-menu:hover{
+    visibility: hidden
+}
+
+.decoration-button-fullscreen{
+    visibility: hidden
+}
+.decoration-button-fullscreen:hover{
+    visibility: hidden
+}
+.decoration-button-unfullscreen{
+    visibility: hidden
+}
+.decoration-button-unfullscreen:hover{
+    visibility: hidden
+}
+
+.decoration-button-resize{
+    visibility: hidden
+}

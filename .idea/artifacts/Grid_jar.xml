@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Grid_jar</output-path>
     <root id="archive" name="Grid.jar">
       <element id="module-output" name="Grid" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Undecorator/dist/Undecorator.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

@@ -1,4 +1,4 @@
-package application;
+package grid;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import insidefx.undecorator.Undecorator;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -19,13 +20,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -33,6 +28,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import edu.berkeley.boinc.rpc.AccountIn;
 import edu.berkeley.boinc.utils.Logging;
+import javafx.stage.StageStyle;
 
 public class InitialProjectRegistration {
 
@@ -51,27 +47,33 @@ public class InitialProjectRegistration {
 			loader.setLocation(getClass().getResource("initial_project_registration.fxml"));
 			loader.setController(new Controller());
 			Parent root = loader.load();
-			Scene scene = new Scene(root, 525, 350);
+			Undecorator frame = new Undecorator(stage, (Region) root);
+			frame.getStylesheets().add("skin/undecorator.css");
+			frame.getStylesheets().add("grid/grid_undecorator.css");
+			Scene scene = new Scene(frame, 725, 500);
 			scene.getStylesheets().add(getClass().getResource("application.css").toString());
+			scene.setFill(Color.TRANSPARENT);
 			stage.setScene(scene);
+			stage.initStyle(StageStyle.TRANSPARENT);
 			stage.show();
-		} catch (Exception e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	private static class Controller implements Initializable {
 		
-		@FXML private GridPane projectsPane;
+		@FXML
+		private GridPane projectsPane;
 		
 		@Override
 		public void initialize(URL location, ResourceBundle resources) {
-			if (Logging.INFO) 
+			if(Logging.INFO)
 				System.out.println("GRID: Reading projects file...");
-			BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("projectsInfo.txt")));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/resources/projectsInfo.txt")));
 			try {
 				String readerLine = reader.readLine();
-				while (readerLine != null) {
+				while(readerLine != null) {
 					AvailableProject availableProject = new AvailableProject();
 					availableProject.projectName = readerLine;
 					readerLine = reader.readLine();
@@ -83,16 +85,16 @@ public class InitialProjectRegistration {
 					readerLine = reader.readLine();
 				}
 				reader.close();
-			} catch (IOException e) {
+			} catch(IOException e) {
 				e.printStackTrace();
 			}
-			if (Logging.INFO) 
-				System.out.println("GRID: Read projects file\nSetting up project panels...");
+			if(Logging.INFO)
+				System.out.println("GRID: Read projects file\nGRID: Setting up project panels...");
 			int yRow = 0;
 			for(AvailableProject availableProject : availableProjects) {
 				//TODO: Change background colors
 				GridPane projectPane = new GridPane();
-				projectPane.setBackground(new Background(new BackgroundFill(Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY)));
+				projectPane.setId("unselected-pane");
 				ColumnConstraints column1 = new ColumnConstraints();
 				column1.setPercentWidth(50);
 				ColumnConstraints column2 = new ColumnConstraints();
@@ -115,10 +117,6 @@ public class InitialProjectRegistration {
 				projectPane.add(category, 1, 0, 1, 2);
 				projectsPane.add(projectPane, 0, yRow);
 				yRow++;
-				Pane pane = new Pane();
-				pane.setMinHeight(7.5);
-				projectsPane.addRow(yRow, pane);
-				yRow++;
 			}
 		}
 		
@@ -140,15 +138,13 @@ public class InitialProjectRegistration {
 		
 		@Override
 		public void handle(MouseEvent event) {
-			if(event.getClickCount() == 1 || event.getClickCount() == 2) {
-				if(((GridPane)event.getSource()).getBackground().getFills().get(0).getFill().equals(Color.DARKGRAY)) {
-					((GridPane)event.getSource()).setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-					selectedProjects.add(availableProjects.get(GridPane.getRowIndex((GridPane)event.getSource()) / 2));
-				} else {
-					((GridPane)event.getSource()).setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-					selectedProjects.remove(availableProjects.get(GridPane.getRowIndex((GridPane)event.getSource()) / 2));
-				}
+			if(((GridPane) event.getSource()).getId().equals("selected-pane")) {
+				((GridPane) event.getSource()).setId("unselected-pane");
+				selectedProjects.remove(availableProjects.get(GridPane.getRowIndex((GridPane) event.getSource())));
+			} else {
+				((GridPane) event.getSource()).setId("selected-pane");
+				selectedProjects.add(availableProjects.get(GridPane.getRowIndex((GridPane) event.getSource())));
 			}
-		}	
+		}
 	}
 }

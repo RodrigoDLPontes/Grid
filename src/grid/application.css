@@ -1,10 +1,11 @@
+
 .root {
 	-fx-background: #262626;
-	-fx-control-inner-background: #cccccc;
+	-fx-control-inner-background: #b3b3b3;
 	-fx-accent: #409fbf;
 	-fx-default-button: #a6ccd9;
-	-fx-focus-color: #b3d9e6;
-	-fx-faint-focus-color: #b3d9e633
+	-fx-focus-color: #94c2d1;
+	-fx-faint-focus-color: #94c2d133
 }
 
 .label {
@@ -22,7 +23,7 @@
 }
 
 .scroll-bar {
-	-fx-background-color: #262626
+	-fx-background-color: transparent
 }
 
 .scroll-bar .increment-button,
@@ -66,6 +67,22 @@
 	-fx-text-fill: white
 }
 
+.progress-bar > .bar {
+	-fx-background-color: linear-gradient(to bottom, #808080, #4d4d4d)
+}
+
 #progress-bar-label {
 	-fx-text-fill: black
+}
+
+#selected-pane {
+	-fx-background-color: #b3b3b3
+}
+
+#unselected-pane {
+	-fx-background-color: #666666
+}
+
+#background {
+	-fx-background-color: linear-gradient(to bottom, #333333, #1a1a1a)
 }

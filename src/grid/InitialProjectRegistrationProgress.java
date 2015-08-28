@@ -1,13 +1,14 @@
-package application;
+package grid;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import application.InitialProjectRegistration.AvailableProject;
+import grid.InitialProjectRegistration.AvailableProject;
 import edu.berkeley.boinc.rpc.AccountOut;
 import edu.berkeley.boinc.rpc.GlobalPreferences;
 import edu.berkeley.boinc.utils.Logging;
+import insidefx.undecorator.Undecorator;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +16,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class InitialProjectRegistrationProgress {
 
@@ -34,6 +38,7 @@ public class InitialProjectRegistrationProgress {
 			Scene scene = new Scene(root, 300, 200);
 			scene.getStylesheets().add(getClass().getResource("application.css").toString());
 			stage.setScene(scene);
+			stage.initStyle(StageStyle.UNDECORATED);
 			stage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -58,7 +63,7 @@ public class InitialProjectRegistrationProgress {
 		public void run() {
 			if (Logging.INFO)
 				System.out.println("GRID: Project registration beginning...");
-			int failureCounter;
+			int failCount;
 			boolean failed;
 			for (AvailableProject project : selectedProjects) {
 				if (Logging.INFO)
@@ -69,18 +74,18 @@ public class InitialProjectRegistrationProgress {
 					}
 				});
 				Grid.rpcClient.createAccount(project.accountIn);
-				failureCounter = 0;
+				failCount = 0;
 				failed = false;
 				while(Grid.rpcClient.createAccountPoll().error_num != 0) {
 					if(Logging.INFO)
 						System.out.println("GRID: error_num: " + Grid.rpcClient.createAccountPoll().error_num);
-					failureCounter++;
+					failCount++;
 					try {
 						Thread.sleep(100);
 					} catch(InterruptedException e) {
 						e.printStackTrace();
 					}
-					if(failureCounter > 50) {
+					if(failCount > 50) {
 						//5 seconds have passed, so skip project registration
 						if(Logging.ERROR)
 							System.out.println("GRID: Account creation failed!");
@@ -110,18 +115,18 @@ public class InitialProjectRegistrationProgress {
 						}
 					});
 					Grid.rpcClient.projectAttach(project.accountIn.url, accountOut.authenticator, project.projectName);
-					failureCounter = 0;
+					failCount = 0;
 					failed = false;
 					while(Grid.rpcClient.projectAttachPoll().error_num != 0) {
 						if(Logging.INFO)
 							System.out.println("GRID: error_num: " + Grid.rpcClient.projectAttachPoll().error_num);
-						failureCounter++;
+						failCount++;
 						try {
 							Thread.sleep(100);
 						} catch(InterruptedException e) {
 							e.printStackTrace();
 						}
-						if(failureCounter > 50) {
+						if(failCount > 50) {
 							//5 seconds have passed, so we skip attaching
 							if(Logging.ERROR)
 								System.out.println("GRID: Host attaching failed!");
@@ -147,15 +152,15 @@ public class InitialProjectRegistrationProgress {
 			}
 			//Set up some default preferences
 			if(Logging.INFO)
-				System.out.println("Setting up default preferences...");
+				System.out.println("GRID: Setting up default preferences...");
 			//TODO: Improve settings
 			GlobalPreferences defaultPreferences = new GlobalPreferences();
 			defaultPreferences.battery_charge_min_pct = 90;
 			defaultPreferences.battery_max_temperature = 40;
 			defaultPreferences.run_on_batteries = false;
 			defaultPreferences.run_if_user_active = true;
-			defaultPreferences.idle_time_to_run = 10;
-			defaultPreferences.suspend_cpu_usage = 0;
+			defaultPreferences.idle_time_to_run = 0;
+			defaultPreferences.suspend_cpu_usage = 100;
 			defaultPreferences.leave_apps_in_memory = false;
 			defaultPreferences.dont_verify_images = false;
 			defaultPreferences.work_buf_min_days = 0.1;

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="525.0" vgap="10.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
+    <columnConstraints>
+        <ColumnConstraints />
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="ALWAYS" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="ALWAYS" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+    </rowConstraints>
+    <children>
+        <Label text="Welcome to Grid!" GridPane.columnIndex="1">
+            <font>
+                <Font size="36.0" />
+            </font>
+        </Label>
+        <Label text="Please, register below..." GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <TextField fx:id="usernameTextField" alignment="CENTER" maxWidth="175.0" promptText="Username" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <GridPane.margin>
+                <Insets />
+            </GridPane.margin>
+        </TextField>
+        <TextField fx:id="emailTextField" alignment="CENTER" maxWidth="175.0" promptText="E-mail" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <GridPane.margin>
+                <Insets />
+            </GridPane.margin>
+        </TextField>
+        <PasswordField fx:id="passwordField" alignment="CENTER" maxWidth="175.0" minWidth="100.0" prefWidth="100.0" promptText="Password" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <GridPane.margin>
+                <Insets />
+            </GridPane.margin>
+        </PasswordField>
+        <PasswordField fx:id="confirmPasswordField" alignment="CENTER" maxWidth="175.0" minWidth="100.0" prefWidth="100.0" promptText="Confirm Password" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <GridPane.margin>
+                <Insets />
+            </GridPane.margin>
+        </PasswordField>
+        <Button mnemonicParsing="false" onAction="#registerButtonClicked" text="Register" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+
+    </children>
+    <opaqueInsets>
+        <Insets />
+    </opaqueInsets>
+    <padding>
+        <Insets bottom="15.0" left="15.0" right="15.0" top="40.0" />
+    </padding>
+</GridPane>

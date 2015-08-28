@@ -1,6 +1,7 @@
-package application;
+package grid;
 
 import edu.berkeley.boinc.rpc.GlobalPreferences;
+import insidefx.undecorator.Undecorator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,7 +10,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -25,9 +29,14 @@ public class Preferences {
             loader.setLocation(getClass().getResource("preferences.fxml"));
             loader.setController(new Controller());
             Parent root = loader.load();
-            Scene scene = new Scene(root, 487.5, 325);
+            Undecorator frame = new Undecorator(stage, (Region)root);
+            frame.getStylesheets().add("skin/undecorator.css");
+            frame.getStylesheets().add("grid/grid_undecorator.css");
+            Scene scene = new Scene(frame, 525, 350);
             scene.getStylesheets().add(getClass().getResource("application.css").toString());
+            scene.setFill(Color.TRANSPARENT);
             stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -160,10 +169,13 @@ public class Preferences {
             }
             newPreferences.cpu_usage_limit = Double.parseDouble(((String) cpuPercent.getValue()).substring(0, ((String) cpuPercent.getValue()).indexOf('%')));
             newPreferences.run_on_batteries = workOnBatteries.isSelected();
-            if(idleTime.getValue().equals("0 (Run always)"))
+            if(idleTime.getValue().equals("0 (Run always)")) {
+                newPreferences.run_if_user_active = true;
                 newPreferences.idle_time_to_run = 0;
-            else
+            } else {
+                newPreferences.run_if_user_active = false;
                 newPreferences.idle_time_to_run = Double.parseDouble((String)idleTime.getValue());
+            }
             Grid.rpcClient.setGlobalPrefsOverrideStruct(newPreferences);
             Grid.rpcClient.readGlobalPrefsOverride();
             stage.close();

@@ -1,8 +1,9 @@
-package application;
+package grid;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import insidefx.undecorator.Undecorator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +14,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Register {
 
@@ -26,10 +30,16 @@ public class Register {
 			loader.setLocation(getClass().getResource("register.fxml"));
 			loader.setController(new Controller());
 			Parent root = loader.load();
-			Scene scene = new Scene(root, 525, 350);
+			Undecorator frame = new Undecorator(stage, (Region)root);
+			frame.getStylesheets().add("skin/undecorator.css");
+			frame.getStylesheets().add("grid/grid_undecorator.css");
+			Scene scene = new Scene(frame, 525, 350);
 			scene.getStylesheets().add(getClass().getResource("application.css").toString());
+			scene.setFill(Color.TRANSPARENT);
 			stage.setScene(scene);
+			stage.initStyle(StageStyle.TRANSPARENT);
 			stage.show();
+			root.requestFocus();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -56,12 +66,13 @@ public class Register {
 		public void registerButtonClicked(ActionEvent event) {
 			//TODO: Check if other fields are valid
 			if (passwordField.getText().equals(confirmPasswordField.getText())) {
-				Grid.initiateBoincRpc();
-				new InitialProjectRegistration(usernameTextField.getText(), emailTextField.getText(), passwordField.getText());
+				if(Grid.initiateBoincRpc()) {
+					new InitialProjectRegistration(usernameTextField.getText(), emailTextField.getText(), passwordField.getText());
+				}
 				Register.stage.close();
 			} else {
 				Alert alert = new Alert(Alert.AlertType.WARNING);
-				alert.setContentText("'Password' and 'Confirm Password' do no match!");
+				alert.setContentText("\"Password\" and \"Confirm Password\" do no match!");
 				alert.showAndWait();
 			}
 		}

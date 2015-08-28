@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: application.Grid
+Main-Class: grid.Grid
 

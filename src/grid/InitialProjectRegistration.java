@@ -92,7 +92,6 @@ public class InitialProjectRegistration {
 				System.out.println("GRID: Read projects file\nGRID: Setting up project panels...");
 			int yRow = 0;
 			for(AvailableProject availableProject : availableProjects) {
-				//TODO: Change background colors
 				GridPane projectPane = new GridPane();
 				projectPane.setId("unselected-pane");
 				ColumnConstraints column1 = new ColumnConstraints();

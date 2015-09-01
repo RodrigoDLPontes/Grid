@@ -4,11 +4,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import grid.InitialProjectRegistration.AvailableProject;
+import grid.ProjectRegistration.AvailableProject;
 import edu.berkeley.boinc.rpc.AccountOut;
 import edu.berkeley.boinc.rpc.GlobalPreferences;
 import edu.berkeley.boinc.utils.Logging;
-import insidefx.undecorator.Undecorator;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,23 +15,21 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class InitialProjectRegistrationProgress {
+public class ProjectRegistrationProgress {
 
 	private static Stage stage;
 	private static Label projectStatusLabel;
 	private static ArrayList<AvailableProject> selectedProjects = new ArrayList<AvailableProject>();
 
-	public InitialProjectRegistrationProgress(ArrayList<AvailableProject> selectedProjects) {
-		InitialProjectRegistrationProgress.selectedProjects = selectedProjects;
+	public ProjectRegistrationProgress(ArrayList<AvailableProject> selectedProjects) {
+		ProjectRegistrationProgress.selectedProjects = selectedProjects;
 		try {
 			stage = new Stage();
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("initial_project_registration_progress.fxml"));
+			loader.setLocation(getClass().getResource("project_registration_progress.fxml"));
 			loader.setController(new Controller());
 			Parent root = loader.load();
 			Scene scene = new Scene(root, 300, 200);
@@ -52,7 +49,7 @@ public class InitialProjectRegistrationProgress {
 
 		@Override
 		public void initialize(URL arg0, ResourceBundle arg1) {
-			InitialProjectRegistrationProgress.projectStatusLabel = projectStatusLabel;
+			ProjectRegistrationProgress.projectStatusLabel = projectStatusLabel;
 			Thread createAccounts = new Thread(new CreateAccounts());
 			createAccounts.start();
 		}

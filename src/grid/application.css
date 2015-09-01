@@ -1,4 +1,3 @@
-
 .root {
 	-fx-background: #262626;
 	-fx-control-inner-background: #b3b3b3;
@@ -81,6 +80,33 @@
 	-fx-background-color: linear-gradient(to bottom, #808080, #4d4d4d);
 	-fx-background-insets: 4;
     -fx-background-radius: 4em;
+}
+
+.chart-legend {
+	-fx-background-color: transparent;
+	visibility: hidden;
+}
+
+.chart-legend-symbol {
+	visibility: hidden;
+}
+
+.chart-legend-item{
+	visibility: hidden;
+}
+
+.chart-series-area-line {
+	-fx-stroke: #cccccc;
+	-fx-stroke-width: 4px;
+}
+
+.chart-series-area-fill {
+	-fx-fill: linear-gradient(to bottom, #cccccc7F, #3333337F);
+}
+
+.chart-area-symbol {
+	-fx-padding: 4px;
+	-fx-background-color: #cccccc;
 }
 
 #progress-bar-label {

@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import edu.berkeley.boinc.rpc.Project;
 import insidefx.undecorator.Undecorator;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -30,21 +31,25 @@ import edu.berkeley.boinc.rpc.AccountIn;
 import edu.berkeley.boinc.utils.Logging;
 import javafx.stage.StageStyle;
 
-public class InitialProjectRegistration {
+public class ProjectRegistration {
 
 	private static Stage stage;
 	private static String username, email, password;
-	private static ArrayList<AvailableProject> availableProjects = new ArrayList<AvailableProject>();
-	private static ArrayList<AvailableProject> selectedProjects = new ArrayList<AvailableProject>();
+	private static boolean firstUse;
+	private static ArrayList<AvailableProject> availableProjects = new ArrayList<>();
+	private static ArrayList<AvailableProject> selectedProjects = new ArrayList<>();
+	private static ArrayList<String> usedProjects = new ArrayList<>();
 
-	public InitialProjectRegistration(String username, String email, String password) {
-		InitialProjectRegistration.username = username;
-		InitialProjectRegistration.email = email;
-		InitialProjectRegistration.password = password;
+	public ProjectRegistration(String username, String email, String password, boolean firstUse, ArrayList<String> usedProjects) {
+		ProjectRegistration.username = username;
+		ProjectRegistration.email = email;
+		ProjectRegistration.password = password;
+		ProjectRegistration.firstUse = firstUse;
+		ProjectRegistration.usedProjects = usedProjects;
 		try {
 			stage = new Stage();
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("initial_project_registration.fxml"));
+			loader.setLocation(getClass().getResource("project_registration.fxml"));
 			loader.setController(new Controller());
 			Parent root = loader.load();
 			Undecorator frame = new Undecorator(stage, (Region) root);
@@ -62,12 +67,23 @@ public class InitialProjectRegistration {
 	}
 
 	private static class Controller implements Initializable {
-		
+
+		@FXML
+		private Label title;
+		@FXML
+		private Label subtitle;
 		@FXML
 		private GridPane projectsPane;
 		
 		@Override
 		public void initialize(URL location, ResourceBundle resources) {
+			if(firstUse) {
+				title.setText("Let's begin...");
+				subtitle.setText("Please, select a few projects you would like to contribute to:");
+			} else {
+				title.setText("Add other projects");
+				subtitle.setText("Please, choose the other projects you would like to contribute to:");
+			}
 			if(Logging.INFO)
 				System.out.println("GRID: Reading projects file...");
 			BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/resources/projectsInfo.txt")));
@@ -87,6 +103,15 @@ public class InitialProjectRegistration {
 				reader.close();
 			} catch(IOException e) {
 				e.printStackTrace();
+			}
+			if(usedProjects != null) {
+				for(AvailableProject availableProject : availableProjects) {
+					for(String name : usedProjects) {
+						if(name.equals(availableProject.projectName)) {
+							availableProjects.remove(availableProject);
+						}
+					}
+				}
 			}
 			if(Logging.INFO)
 				System.out.println("GRID: Read projects file\nGRID: Setting up project panels...");
@@ -121,7 +146,7 @@ public class InitialProjectRegistration {
 		
 		@FXML
 		public void proceedButtonClicked(ActionEvent event) {
-			new InitialProjectRegistrationProgress(selectedProjects);
+			new ProjectRegistrationProgress(selectedProjects);
 			stage.close();
 		}
 	}

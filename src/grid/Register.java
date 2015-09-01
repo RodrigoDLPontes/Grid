@@ -67,7 +67,7 @@ public class Register {
 			//TODO: Check if other fields are valid
 			if (passwordField.getText().equals(confirmPasswordField.getText())) {
 				if(Grid.initiateBoincRpc()) {
-					new InitialProjectRegistration(usernameTextField.getText(), emailTextField.getText(), passwordField.getText());
+					new ProjectRegistration(usernameTextField.getText(), emailTextField.getText(), passwordField.getText(), true, null);
 				}
 				Register.stage.close();
 			} else {

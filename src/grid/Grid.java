@@ -31,11 +31,10 @@ public class Grid extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         initialConfiguration();
         if (projectsFolder.getParentFile().exists() && projectsFolder.exists()) {
             if (Logging.INFO) System.out.println("GRID: Program data folder found");
-            ArrayList<String> list = new ArrayList<String>(Arrays.asList(projectsFolder.list()));
+            ArrayList<String> list = new ArrayList<>(Arrays.asList(projectsFolder.list()));
             list.remove("placeholder.txt");
             list.remove("virtualbox");
             list.remove(".DS_Store");

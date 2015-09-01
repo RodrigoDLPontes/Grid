@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
   </columnConstraints>
@@ -30,12 +30,37 @@
           </Tab>
             <Tab text="Projects">
                <content>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+                     <content>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                           <center>
+                              <GridPane fx:id="projectsPane" vgap="15.0" BorderPane.alignment="CENTER">
+                                 <padding>
+                                    <Insets bottom="7.5" left="7.5" right="7.5" top="7.5" />
+                                 </padding>
+                              </GridPane>
+                           </center>
+                           <bottom>
+                              <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <Button fx:id="addProjectButton" mnemonicParsing="false" text="Add" />
+                                 </children>
+                              </HBox>
+                           </bottom>
+                        </BorderPane>
+                     </content>
+                  </ScrollPane>
+               </content>
+            </Tab>
+            <Tab text="Statistics">
+               <content>
                   <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
                      <content>
-                        <GridPane fx:id="projectsPane" vgap="15.0">
+                        <GridPane fx:id="statisticsPane">
                            <padding>
                               <Insets bottom="7.5" left="7.5" right="7.5" top="7.5" />
-                           </padding></GridPane>
+                           </padding>
+                        </GridPane>
                      </content>
                   </ScrollPane>
                </content>

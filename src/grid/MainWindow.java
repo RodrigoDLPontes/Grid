@@ -1,6 +1,7 @@
 package grid;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,6 +27,7 @@ import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.*;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -42,6 +44,7 @@ public class MainWindow {
 
 	private static GridPane tasksPane;
 	private static GridPane projectsPane;
+	private static GridPane statisticsPane;
 	private static Menu activityMenu;
 	private Stage stage;
 
@@ -73,6 +76,9 @@ public class MainWindow {
 		@FXML
 		private GridPane projectsPane;
 		@FXML
+		private GridPane statisticsPane;
+		
+		@FXML
 		private Menu activityMenu;
 		@FXML
 		private MenuItem close;
@@ -85,6 +91,7 @@ public class MainWindow {
 		public void initialize(URL location, ResourceBundle resources) {
 			MainWindow.tasksPane = tasksPane;
 			MainWindow.projectsPane = projectsPane;
+			MainWindow.statisticsPane = statisticsPane;
 			MainWindow.activityMenu = activityMenu;
 			close.setOnAction(new MenuItemEventHandler());
 			exit.setOnAction(new MenuItemEventHandler());
@@ -113,6 +120,7 @@ public class MainWindow {
 			Timer updateProjects = new Timer(true);
 			updateTasks.schedule(new UpdateTasks(), 0, 1000);
 			updateProjects.schedule(new UpdateProjects(), 0, 1000);
+			updateStatistics();
 		}
 	}
 
@@ -121,7 +129,7 @@ public class MainWindow {
 		public void run() {
 			Platform.runLater(new Runnable() {
 				public void run() {
-					int yRow = 0;
+					int row = 0;
 					tasksPane.getChildren().remove(0, tasksPane.getChildren().size());
 					ArrayList<Result> tasks = Grid.rpcClient.getResults();
 					//Simple alphabetical ordering
@@ -185,8 +193,8 @@ public class MainWindow {
 						GridPane.setValignment(deadlineLabel, VPos.CENTER);
 						GridPane.setHalignment(deadlineLabel, HPos.RIGHT);
 						taskPane.add(deadlineLabel, 2, 0, 1, 2);
-						tasksPane.add(taskPane, 0, yRow);
-						yRow++;
+						tasksPane.add(taskPane, 0, row);
+						row++;
 					}
 				}
 			});
@@ -198,7 +206,7 @@ public class MainWindow {
 		public void run() {
 			Platform.runLater(new Runnable() {
 				public void run() {
-					int yRow = 0;
+					int row = 0;
 					projectsPane.getChildren().remove(0, projectsPane.getChildren().size());
 					for(Project project : Grid.rpcClient.getProjectStatus()) {
 						GridPane projectPane = new GridPane();
@@ -217,12 +225,56 @@ public class MainWindow {
 						creditLabel.setFont(new Font(18));
 						GridPane.setHalignment(creditLabel, HPos.RIGHT);
 						projectPane.add(creditLabel, 1, 0);
-						projectsPane.add(projectPane, 0, yRow);
-						yRow++;
+						projectsPane.add(projectPane, 0, row);
+						row++;
 					}
 				}
 			});
 		}
+	}
+
+	private void updateStatistics() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				ArrayList<Statistic> statistics = StatisticsParser.getStatistics();
+				for(Statistic statistic : statistics) {
+					if(statistics.indexOf(statistic) != 0) {
+						for(int i = statistics.indexOf(statistic) - 1; i >= 0; i--) {
+							if(statistic.project_name.compareToIgnoreCase(statistics.get(i).project_name) < 0) {
+								Collections.swap(statistics, statistics.indexOf(statistic), i);
+							}
+						}
+					}
+				}
+				int row1 = 0;
+				for(Statistic statistic : statistics) {
+					GridPane statisticPane = new GridPane();
+					ColumnConstraints column = new ColumnConstraints();
+					column.setPercentWidth(100);
+					statisticPane.getColumnConstraints().add(column);
+					GridPane.setHgrow(statisticPane, Priority.ALWAYS);
+					Label projectName = new Label(statistic.project_name);
+					projectName.setFont(new Font(18));
+					statisticPane.add(projectName, 0, 0);
+					NumberAxis xAxis = new NumberAxis();
+					NumberAxis yAxis = new NumberAxis();
+					AreaChart<Double, Double> areaChart = new AreaChart<Double, Double>((Axis)xAxis, (Axis)yAxis);
+					areaChart.setMaxHeight(250);
+					XYChart.Series<Double, Double> xyChart = new XYChart.Series<Double, Double>();
+					int xPos = 0;
+					for(Statistic.DailyStat dailyStat : statistic.dailyStats) {
+						xyChart.getData().add(new XYChart.Data(xPos, dailyStat.host_total_credit));
+						xPos++;
+					}
+					areaChart.getData().add(xyChart);
+					GridPane.setHalignment(areaChart, HPos.CENTER);
+					statisticPane.add(areaChart, 0, 2);
+					statisticsPane.add(statisticPane, 0, row1);
+					row1++;
+				}
+			}
+		});
 	}
 
 	class PaneEventHandler implements EventHandler<MouseEvent> {
@@ -271,9 +323,7 @@ public class MainWindow {
 		// TODO: Handle "Preferences"
 		public void handle(ActionEvent event) {
 			if(event.getSource() instanceof MenuItem) {
-				/*
-				Activity Menu
-				 */
+				//Activity menu
 				if(((MenuItem) event.getSource()).getText().equals("Resume activity")) {
 					((MenuItem) event.getSource()).setText("Suspend activity");
 					Grid.rpcClient.setRunMode(2, 0);
@@ -286,22 +336,16 @@ public class MainWindow {
 				} else if(((MenuItem) event.getSource()).getText().equals("Suspend network activity")) {
 					((MenuItem) event.getSource()).setText("Resume network activity");
 					Grid.rpcClient.setNetworkMode(3, 0);
-				/*
-				File Menu
-				 */
+					//File menu
 				} else if(((MenuItem) event.getSource()).getText().equals("Close")) {
 					stage.close();
 				} else if(((MenuItem) event.getSource()).getText().equals("Exit")) {
 					while(!Grid.rpcClient.quit()) ;
 					System.exit(0);
-				/*
-				Preferences
-				 */
+					//Preferences
 				} else if(((MenuItem) event.getSource()).getText().equals("Preferences")) {
 					new Preferences();
-				/*
-				Task's popup menu
-				 */
+					//Task's popup menu
 				} else if(((MenuItem) event.getSource()).getText().equals("Resume")) {
 					source.setId("selected-pane");
 					setTaskState(RpcClient.RESULT_RESUME, ((Label) source.getChildren().get(1)).getText());

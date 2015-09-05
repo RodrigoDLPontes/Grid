@@ -1,11 +1,11 @@
 package grid;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -24,15 +24,16 @@ import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
-import javafx.scene.control.ContextMenu;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -42,11 +43,13 @@ import javafx.stage.StageStyle;
 
 public class MainWindow {
 
+	private static Stage stage;
+
 	private static GridPane tasksPane;
 	private static GridPane projectsPane;
-	private static GridPane statisticsPane;
+	private static GridPane profilePane;
 	private static Menu activityMenu;
-	private Stage stage;
+	private static ImageView activityButtonImageView;
 
 	public MainWindow() {
 		try {
@@ -61,6 +64,7 @@ public class MainWindow {
 			Scene scene = new Scene(frame, 600, 400);
 			scene.getStylesheets().add(getClass().getResource("application.css").toString());
 			scene.setFill(Color.TRANSPARENT);
+			stage.setTitle("Grid");
 			stage.setScene(scene);
 			stage.initStyle(StageStyle.TRANSPARENT);
 			stage.show();
@@ -76,8 +80,7 @@ public class MainWindow {
 		@FXML
 		private GridPane projectsPane;
 		@FXML
-		private GridPane statisticsPane;
-		
+		private GridPane profilePane;
 		@FXML
 		private Menu activityMenu;
 		@FXML
@@ -86,35 +89,115 @@ public class MainWindow {
 		private MenuItem exit;
 		@FXML
 		private MenuItem preferences;
+		@FXML
+		private Button activityButton;
+		@FXML
+		private Button addProjectButton;
+		@FXML
+		private ImageView activityButtonImageView;
+		@FXML
+		private Label usernameLabel;
+		@FXML
+		private Label totalCreditLabel;
+		@FXML
+		private Label rankLabel;
+		@FXML
+		private ImageView rankImage;
 
 		@Override
 		public void initialize(URL location, ResourceBundle resources) {
 			MainWindow.tasksPane = tasksPane;
 			MainWindow.projectsPane = projectsPane;
-			MainWindow.statisticsPane = statisticsPane;
+			MainWindow.profilePane = profilePane;
 			MainWindow.activityMenu = activityMenu;
-			close.setOnAction(new MenuItemEventHandler());
-			exit.setOnAction(new MenuItemEventHandler());
-			preferences.setOnAction(new MenuItemEventHandler());
+			MainWindow.activityButtonImageView = activityButtonImageView;
+			close.setOnAction(new ActionEventHandler());
+			exit.setOnAction(new ActionEventHandler());
+			preferences.setOnAction(new ActionEventHandler());
+			activityButton.setOnAction(new ActionEventHandler());
+			addProjectButton.setOnAction(new ActionEventHandler());
 			CcStatus ccStatus = Grid.rpcClient.getCcStatus();
 			if(ccStatus.task_mode == 1 || ccStatus.task_mode == 2) {
+				MainWindow.activityButtonImageView.setImage(new Image("resources/Pause.png"));
 				MenuItem item = new MenuItem("Suspend activity");
-				item.setOnAction(new MenuItemEventHandler());
+				item.setOnAction(new ActionEventHandler());
 				MainWindow.activityMenu.getItems().add(item);
 			} else {
+				MainWindow.activityButtonImageView.setImage(new Image("resources/Resume.png"));
 				MenuItem item = new MenuItem("Resume activity");
-				item.setOnAction(new MenuItemEventHandler());
+				item.setOnAction(new ActionEventHandler());
 				MainWindow.activityMenu.getItems().add(item);
 			}
 			if(ccStatus.network_mode == 1 || ccStatus.network_mode == 2) {
 				MenuItem item = new MenuItem("Suspend network activity");
-				item.setOnAction(new MenuItemEventHandler());
+				item.setOnAction(new ActionEventHandler());
 				MainWindow.activityMenu.getItems().add(item);
 
 			} else {
 				MenuItem item = new MenuItem("Resume network activity");
-				item.setOnAction(new MenuItemEventHandler());
+				item.setOnAction(new ActionEventHandler());
 				MainWindow.activityMenu.getItems().add(item);
+			}
+			try {
+				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+						new FileInputStream(new File("C:\\ProgramData\\Grid\\userInfo.cfg"))));
+				usernameLabel.setText(bufferedReader.readLine());
+				bufferedReader.close();
+			} catch(FileNotFoundException e) {
+				e.printStackTrace();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+			double totalCredit = 0;
+			for(Project project : Grid.rpcClient.getProjectStatus()) {
+				totalCredit += project.user_total_credit;
+			}
+			totalCreditLabel.setText("Total credit: " + new DecimalFormat("#.##").format(totalCredit));
+			if(0 <= totalCredit && totalCredit < 1000) {
+				rankLabel.setText("Rank 1");
+				rankImage.setImage(new Image("/resources/1.png"));
+			} else if(1000 <= totalCredit && totalCredit < 5000) {
+				rankLabel.setText("Rank 2");
+				rankImage.setImage(new Image("/resources/2.png"));
+			} else if(5000 <= totalCredit && totalCredit < 10000) {
+				rankLabel.setText("Rank 3");
+				rankImage.setImage(new Image("/resources/3.png"));
+			} else if(10000 <= totalCredit && totalCredit < 50000) {
+				rankLabel.setText("Rank 4");
+				rankImage.setImage(new Image("/resources/4.png"));
+			} else if(50000 <= totalCredit && totalCredit < 100000) {
+				rankLabel.setText("Rank 5");
+				rankImage.setImage(new Image("/resources/5.png"));
+			} else if(100000 <= totalCredit && totalCredit < 500000) {
+				rankLabel.setText("Rank 6");
+				rankImage.setImage(new Image("/resources/6.png"));
+			} else if(500000 <= totalCredit && totalCredit < 1000000) {
+				rankLabel.setText("Rank 7");
+				rankImage.setImage(new Image("/resources/7.png"));
+			} else if(1000000 <= totalCredit && totalCredit < 5000000) {
+				rankLabel.setText("Rank 8");
+				rankImage.setImage(new Image("/resources/8.png"));
+			} else if(5000000 <= totalCredit && totalCredit < 10000000) {
+				rankLabel.setText("Rank 9");
+				rankImage.setImage(new Image("/resources/9.png"));
+			} else if(10000000 <= totalCredit && totalCredit < 50000000) {
+				rankLabel.setText("Rank 10");
+				rankImage.setImage(new Image("/resources/10.png"));
+			} else if(50000000 <= totalCredit && totalCredit < 100000000) {
+				rankLabel.setText("Rank 11");
+				rankImage.setImage(new Image("/resources/11.png"));
+			} else if(100000000 <= totalCredit && totalCredit < 500000000) {
+				rankLabel.setText("Rank 12");
+				rankImage.setImage(new Image("/resources/12.png"));
+			} else if(500000000 <= totalCredit && totalCredit < 1000000000) {
+				rankLabel.setText("Rank 13");
+				rankImage.setImage(new Image("/resources/13.png"));
+			} else if(1000000000 <= totalCredit && totalCredit < 5000000000l) {
+				rankLabel.setText("Rank 14");
+				rankImage.setImage(new Image("/resources/14.png"));
+			} else if(5000000000l <= totalCredit && totalCredit < 10000000000l) {
+				rankLabel.setText("Rank 15");
+				rankImage.setImage(new Image("/resources/15.png"));
 			}
 			Timer updateTasks = new Timer(true);
 			Timer updateProjects = new Timer(true);
@@ -124,113 +207,108 @@ public class MainWindow {
 		}
 	}
 
-	class UpdateTasks extends TimerTask {
-		// TODO: Improve this
-		public void run() {
-			Platform.runLater(new Runnable() {
-				public void run() {
-					int row = 0;
-					tasksPane.getChildren().remove(0, tasksPane.getChildren().size());
-					ArrayList<Result> tasks = Grid.rpcClient.getResults();
-					//Simple alphabetical ordering
-					for(Result task : tasks) {
-						if(tasks.indexOf(task) != 0) {
-							for(int i = tasks.indexOf(task) - 1; i >= 0; i--) {
-								if(task.name.compareToIgnoreCase(tasks.get(i).name) < 0) {
-									Collections.swap(tasks, tasks.indexOf(task), i);
-								}
+	private void updateTasks() {
+		Platform.runLater(new Runnable() {
+			public void run() {
+				int row = 0;
+				tasksPane.getChildren().remove(0, tasksPane.getChildren().size());
+				ArrayList<Result> tasks = Grid.rpcClient.getResults();
+				//Simple alphabetical ordering
+				for(Result task : tasks) {
+					if(tasks.indexOf(task) != 0) {
+						for(int i = tasks.indexOf(task) - 1; i >= 0; i--) {
+							if(task.name.compareToIgnoreCase(tasks.get(i).name) < 0) {
+								Collections.swap(tasks, tasks.indexOf(task), i);
 							}
 						}
-					}
-					//Place active tasks first
-					int position = 5;
-					for(Result task : tasks) {
-						if(task.active_task && !task.suspended_via_gui && task.active_task_state != 0) {
-							for(int i = tasks.indexOf(task) - 1; i >= 0; i--) {
-								if(!(tasks.get(i).active_task && !tasks.get(i).suspended_via_gui && tasks.get(i).active_task_state != 0)) {
-									Collections.swap(tasks, tasks.indexOf(task), i);
-								}
-							}
-						}
-					}
-					//Display tasks
-					for(Result task : tasks) {
-						GridPane taskPane = new GridPane();
-						if(task.active_task && !task.suspended_via_gui && task.active_task_state != 0)
-							taskPane.setId("selected-pane");
-						else
-							taskPane.setId("unselected-pane");
-						ColumnConstraints column1 = new ColumnConstraints();
-						column1.setPercentWidth(50);
-						ColumnConstraints column2 = new ColumnConstraints();
-						column2.setPercentWidth(30);
-						ColumnConstraints column3 = new ColumnConstraints();
-						column3.setPercentWidth(20);
-						taskPane.getColumnConstraints().addAll(column1, column2, column3);
-						taskPane.setPadding(new Insets(0, 5, 3, 5));
-						taskPane.setOnMouseClicked(new PaneEventHandler());
-						GridPane.setHgrow(taskPane, Priority.ALWAYS);
-						Label projectLabel = new Label(getProjectName(task.project_url));
-						projectLabel.setFont(new Font(20));
-						taskPane.add(projectLabel, 0, 0);
-						Label taskName = new Label(task.name);
-						taskName.setFont(new Font(10));
-						taskPane.add(taskName, 0, 1);
-						ProgressBar progressBar = new ProgressBar();
-						progressBar.setPrefWidth(150);
-						progressBar.setProgress(task.fraction_done);
-						GridPane.setValignment(progressBar, VPos.CENTER);
-						GridPane.setHalignment(progressBar, HPos.CENTER);
-						taskPane.add(progressBar, 1, 0, 1, 2);
-						Label progressLabel = new Label(new DecimalFormat("#.##%").format(task.fraction_done));
-						progressLabel.setId("progress-bar-label");
-						GridPane.setValignment(progressLabel, VPos.CENTER);
-						GridPane.setHalignment(progressLabel, HPos.CENTER);
-						GridPane.setMargin(progressLabel, new Insets(0, 0, 1, 0));
-						taskPane.add(progressLabel, 1, 0, 1, 2);
-						SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM dd");
-						Label deadlineLabel = new Label(simpleDateFormat.format(new Date(task.report_deadline * 1000)));
-						GridPane.setValignment(deadlineLabel, VPos.CENTER);
-						GridPane.setHalignment(deadlineLabel, HPos.RIGHT);
-						taskPane.add(deadlineLabel, 2, 0, 1, 2);
-						tasksPane.add(taskPane, 0, row);
-						row++;
 					}
 				}
-			});
-		}
+				//Place active tasks first
+				int position = 5;
+				for(Result task : tasks) {
+					if(task.active_task && !task.suspended_via_gui && task.active_task_state != 0) {
+						for(int i = tasks.indexOf(task) - 1; i >= 0; i--) {
+							if(!(tasks.get(i).active_task && !tasks.get(i).suspended_via_gui && tasks.get(i).active_task_state != 0)) {
+								Collections.swap(tasks, tasks.indexOf(task), i);
+							}
+						}
+					}
+				}
+				//Display tasks
+				for(Result task : tasks) {
+					GridPane taskPane = new GridPane();
+					if(task.active_task && !task.suspended_via_gui && task.active_task_state != 0)
+						taskPane.setId("selected-pane");
+					else
+						taskPane.setId("unselected-pane");
+					ColumnConstraints column1 = new ColumnConstraints();
+					column1.setPercentWidth(50);
+					ColumnConstraints column2 = new ColumnConstraints();
+					column2.setPercentWidth(30);
+					ColumnConstraints column3 = new ColumnConstraints();
+					column3.setPercentWidth(20);
+					taskPane.getColumnConstraints().addAll(column1, column2, column3);
+					taskPane.setPadding(new Insets(0, 5, 3, 5));
+					taskPane.setOnMouseClicked(new PaneEventHandler());
+					GridPane.setHgrow(taskPane, Priority.ALWAYS);
+					Label projectLabel = new Label(getProjectName(task.project_url));
+					projectLabel.setFont(new Font(20));
+					taskPane.add(projectLabel, 0, 0);
+					Label taskName = new Label(task.name);
+					taskName.setFont(new Font(10));
+					taskPane.add(taskName, 0, 1);
+					ProgressBar progressBar = new ProgressBar();
+					progressBar.setPrefWidth(150);
+					progressBar.setProgress(task.fraction_done);
+					GridPane.setValignment(progressBar, VPos.CENTER);
+					GridPane.setHalignment(progressBar, HPos.CENTER);
+					taskPane.add(progressBar, 1, 0, 1, 2);
+					Label progressLabel = new Label(new DecimalFormat("#.##%").format(task.fraction_done));
+					progressLabel.setId("progress-bar-label");
+					GridPane.setValignment(progressLabel, VPos.CENTER);
+					GridPane.setHalignment(progressLabel, HPos.CENTER);
+					GridPane.setMargin(progressLabel, new Insets(0, 0, 1, 0));
+					taskPane.add(progressLabel, 1, 0, 1, 2);
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM dd");
+					Label deadlineLabel = new Label(simpleDateFormat.format(new Date(task.report_deadline * 1000)));
+					GridPane.setValignment(deadlineLabel, VPos.CENTER);
+					GridPane.setHalignment(deadlineLabel, HPos.RIGHT);
+					taskPane.add(deadlineLabel, 2, 0, 1, 2);
+					tasksPane.add(taskPane, 0, row);
+					row++;
+				}
+			}
+		});
 	}
 
-	class UpdateProjects extends TimerTask {
-		// TODO: Improve this
-		public void run() {
-			Platform.runLater(new Runnable() {
-				public void run() {
-					int row = 0;
-					projectsPane.getChildren().remove(0, projectsPane.getChildren().size());
-					for(Project project : Grid.rpcClient.getProjectStatus()) {
-						GridPane projectPane = new GridPane();
-						projectPane.setBackground(new Background(new BackgroundFill(Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY)));
-						ColumnConstraints column1 = new ColumnConstraints();
-						column1.setPercentWidth(50);
-						ColumnConstraints column2 = new ColumnConstraints();
-						column2.setPercentWidth(50);
-						projectPane.getColumnConstraints().addAll(column1, column2);
-						projectPane.setPadding(new Insets(5));
-						GridPane.setHgrow(projectPane, Priority.ALWAYS);
-						Label projectLabel = new Label(project.project_name);
-						projectLabel.setFont(new Font(18));
-						projectPane.add(projectLabel, 0, 0);
-						Label creditLabel = new Label(String.valueOf((int) project.user_total_credit));
-						creditLabel.setFont(new Font(18));
-						GridPane.setHalignment(creditLabel, HPos.RIGHT);
-						projectPane.add(creditLabel, 1, 0);
-						projectsPane.add(projectPane, 0, row);
-						row++;
-					}
+	private void updateProjects() {
+		Platform.runLater(new Runnable() {
+			public void run() {
+				int row = 0;
+				projectsPane.getChildren().remove(0, projectsPane.getChildren().size());
+				for(Project project : Grid.rpcClient.getProjectStatus()) {
+					GridPane projectPane = new GridPane();
+					projectPane.setId("project-pane");
+					ColumnConstraints column1 = new ColumnConstraints();
+					column1.setPercentWidth(50);
+					ColumnConstraints column2 = new ColumnConstraints();
+					column2.setPercentWidth(50);
+					projectPane.getColumnConstraints().addAll(column1, column2);
+					projectPane.setPadding(new Insets(5));
+					projectPane.setOnMouseClicked(new PaneEventHandler());
+					GridPane.setHgrow(projectPane, Priority.ALWAYS);
+					Label projectLabel = new Label(project.project_name);
+					projectLabel.setFont(new Font(18));
+					projectPane.add(projectLabel, 0, 0);
+					Label creditLabel = new Label(String.valueOf((int) project.user_total_credit));
+					creditLabel.setFont(new Font(18));
+					GridPane.setHalignment(creditLabel, HPos.RIGHT);
+					projectPane.add(creditLabel, 1, 0);
+					projectsPane.add(projectPane, 0, row);
+					row++;
 				}
-			});
-		}
+			}
+		});
 	}
 
 	private void updateStatistics() {
@@ -247,7 +325,7 @@ public class MainWindow {
 						}
 					}
 				}
-				int row1 = 0;
+				int row1 = 2;
 				for(Statistic statistic : statistics) {
 					GridPane statisticPane = new GridPane();
 					ColumnConstraints column = new ColumnConstraints();
@@ -257,66 +335,91 @@ public class MainWindow {
 					Label projectName = new Label(statistic.project_name);
 					projectName.setFont(new Font(18));
 					statisticPane.add(projectName, 0, 0);
-					NumberAxis xAxis = new NumberAxis();
+					CategoryAxis xAxis = new CategoryAxis();
 					NumberAxis yAxis = new NumberAxis();
-					AreaChart<Double, Double> areaChart = new AreaChart<Double, Double>((Axis)xAxis, (Axis)yAxis);
+					AreaChart<String, Double> areaChart = new AreaChart((Axis) xAxis, (Axis) yAxis);
 					areaChart.setMaxHeight(250);
-					XYChart.Series<Double, Double> xyChart = new XYChart.Series<Double, Double>();
-					int xPos = 0;
+					XYChart.Series<String, Double> xyChart = new XYChart.Series();
+					DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
 					for(Statistic.DailyStat dailyStat : statistic.dailyStats) {
-						xyChart.getData().add(new XYChart.Data(xPos, dailyStat.host_total_credit));
-						xPos++;
+						xyChart.getData().add(new XYChart.Data(dateFormat.format(new Date((long) (dailyStat.day) * 1000)),
+								dailyStat.host_total_credit));
 					}
 					areaChart.getData().add(xyChart);
 					GridPane.setHalignment(areaChart, HPos.CENTER);
 					statisticPane.add(areaChart, 0, 2);
-					statisticsPane.add(statisticPane, 0, row1);
+					profilePane.add(statisticPane, 0, row1);
 					row1++;
 				}
 			}
 		});
 	}
 
+
+	class UpdateTasks extends TimerTask {
+		// TODO: Improve this
+		public void run() {
+			updateTasks();
+		}
+	}
+
+	class UpdateProjects extends TimerTask {
+		// TODO: Improve this
+		public void run() {
+			updateProjects();
+		}
+	}
+
 	class PaneEventHandler implements EventHandler<MouseEvent> {
 		// TODO: More user friendly UI response.
 		public void handle(MouseEvent event) {
 			if(event.getSource() instanceof GridPane) {
-				if(event.getClickCount() == 2) {
-					if(((GridPane) event.getSource()).getId().equals("selected-pane")) {
-						((GridPane) event.getSource()).setId("unselected-pane");
-						setTaskState(RpcClient.RESULT_SUSPEND, ((Label) ((GridPane) event.getSource()).getChildren().get(1)).getText());
-					} else {
-						((GridPane) event.getSource()).setId("selected-pane");
-						setTaskState(RpcClient.RESULT_RESUME, ((Label) ((GridPane) event.getSource()).getChildren().get(1)).getText());
+				if(((GridPane) event.getSource()).getId().equals("project-pane")) {
+					if(event.isPopupTrigger()) {
+						ContextMenu contextMenu = new ContextMenu();
+						MenuItem item1 = new MenuItem("Remove");
+						item1.setOnAction(new ActionEventHandler((GridPane) event.getSource()));
+						contextMenu.getItems().addAll(item1);
+						contextMenu.show((GridPane) event.getSource(), event.getScreenX(), event.getScreenY());
 					}
-				} else if(event.isPopupTrigger()) {
-					ContextMenu contextMenu = new ContextMenu();
-					MenuItem item1;
-					if(((GridPane) event.getSource()).getId().equals("selected-pane")) {
-						item1 = new MenuItem("Suspend");
-					} else {
-						item1 = new MenuItem("Resume");
+				} else {
+					if(event.getClickCount() == 2) {
+						if(((GridPane) event.getSource()).getId().equals("selected-pane")) {
+							((GridPane) event.getSource()).setId("unselected-pane");
+							setTaskState(RpcClient.RESULT_SUSPEND, ((Label) ((GridPane) event.getSource()).getChildren().get(1)).getText());
+						} else {
+							((GridPane) event.getSource()).setId("selected-pane");
+							setTaskState(RpcClient.RESULT_RESUME, ((Label) ((GridPane) event.getSource()).getChildren().get(1)).getText());
+						}
+					} else if(event.isPopupTrigger()) {
+						ContextMenu contextMenu = new ContextMenu();
+						MenuItem item1;
+						if(((GridPane) event.getSource()).getId().equals("selected-pane")) {
+							item1 = new MenuItem("Suspend");
+						} else {
+							item1 = new MenuItem("Resume");
+						}
+						item1.setOnAction(new ActionEventHandler((GridPane) event.getSource()));
+						MenuItem item2 = new MenuItem("Abort");
+						item2.setOnAction(new ActionEventHandler((GridPane) event.getSource()));
+						MenuItem item3 = new MenuItem("Project's HomePage");
+						item3.setOnAction(new ActionEventHandler((GridPane) event.getSource()));
+						contextMenu.getItems().addAll(item1, item2, item3);
+						contextMenu.show((GridPane) event.getSource(), event.getScreenX(), event.getScreenY());
 					}
-					item1.setOnAction(new MenuItemEventHandler((GridPane) event.getSource()));
-					MenuItem item2 = new MenuItem("Abort");
-					item2.setOnAction(new MenuItemEventHandler((GridPane) event.getSource()));
-					MenuItem item3 = new MenuItem("Project's HomePage");
-					item3.setOnAction(new MenuItemEventHandler((GridPane) event.getSource()));
-					contextMenu.getItems().addAll(item1, item2, item3);
-					contextMenu.show((GridPane) event.getSource(), event.getScreenX(), event.getScreenY());
 				}
 			}
 		}
 	}
 
-	class MenuItemEventHandler implements EventHandler<ActionEvent> {
+	class ActionEventHandler implements EventHandler<ActionEvent> {
 
 		GridPane source;
 
-		public MenuItemEventHandler() {
+		public ActionEventHandler() {
 		}
 
-		public MenuItemEventHandler(GridPane source) {
+		public ActionEventHandler(GridPane source) {
 			this.source = source;
 		}
 
@@ -361,6 +464,26 @@ public class MainWindow {
 					} catch(IOException e) {
 						e.printStackTrace();
 					}
+				} else if(((MenuItem) event.getSource()).getText().equals("Remove")) {
+					setProjectState(RpcClient.PROJECT_DETACH, ((Label) source.getChildren().get(0)).getText());
+					updateProjects();
+				}
+			} else if(event.getSource() instanceof Button) {
+				if(((Button) event.getSource()).getId().equals("activityButton")) {
+					CcStatus ccStatus = Grid.rpcClient.getCcStatus();
+					if(ccStatus.task_mode == 1 || ccStatus.task_mode == 2) {
+						activityButtonImageView.setImage(new Image("resources/Resume.png"));
+						Grid.rpcClient.setRunMode(3, 0);
+					} else {
+						activityButtonImageView.setImage(new Image("resources/Pause.png"));
+						Grid.rpcClient.setRunMode(2, 0);
+					}
+				} else if(((Button) event.getSource()).getId().equals("addProjectButton")) {
+					ArrayList<String> usedProjects = new ArrayList<>();
+					for(Project project : Grid.rpcClient.getProjectStatus()) {
+						usedProjects.add(project.master_url);
+					}
+					NewProjectRegistrationPrompt newProjectRegistrationPrompt = new NewProjectRegistrationPrompt(stage, usedProjects);
 				}
 			}
 		}
@@ -384,6 +507,12 @@ public class MainWindow {
 		return null;
 	}
 
+	/**
+	 * Gets task's URL given task's name
+	 *
+	 * @param taskName Task's name
+	 * @return Task's URL
+	 */
 	private URI getTaskURL(String taskName) {
 		for(Result result : Grid.rpcClient.getResults()) {
 			if(taskName.equals(result.name))
@@ -398,7 +527,7 @@ public class MainWindow {
 	}
 
 	/**
-	 * Sets task state
+	 * Sets task's state given task's name
 	 *
 	 * @param state    State to be set (as found in RpcClient)
 	 * @param taskName Task's name
@@ -407,6 +536,22 @@ public class MainWindow {
 		for(Result result : Grid.rpcClient.getResults()) {
 			if(taskName.equals(result.name))
 				Grid.rpcClient.resultOp(state, result.project_url, taskName);
+			return;
+		}
+	}
+
+	/**
+	 * Sets project's state given project's name
+	 *
+	 * @param state       State to be set (as found in RpcClient)
+	 * @param projectName Project's name
+	 */
+	private void setProjectState(int state, String projectName) {
+		for(Project project : Grid.rpcClient.getProjectStatus()) {
+			if(projectName.equals(project.project_name)) {
+				Grid.rpcClient.projectOp(state, project.master_url);
+				return;
+			}
 		}
 	}
 }

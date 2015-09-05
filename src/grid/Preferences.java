@@ -35,6 +35,7 @@ public class Preferences {
             Scene scene = new Scene(frame, 525, 350);
             scene.getStylesheets().add(getClass().getResource("application.css").toString());
             scene.setFill(Color.TRANSPARENT);
+            stage.setTitle("Preferences");
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.show();

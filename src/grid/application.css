@@ -121,6 +121,10 @@
 	-fx-background-color: #666666;
 }
 
+#project-pane {
+	-fx-background-color: #b3b3b3;
+}
+
 #background {
 	-fx-background-color: linear-gradient(to bottom, #333333, #1a1a1a);
 }

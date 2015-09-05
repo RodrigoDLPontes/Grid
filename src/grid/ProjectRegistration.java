@@ -58,6 +58,7 @@ public class ProjectRegistration {
 			Scene scene = new Scene(frame, 725, 500);
 			scene.getStylesheets().add(getClass().getResource("application.css").toString());
 			scene.setFill(Color.TRANSPARENT);
+			stage.setTitle("Project Registration");
 			stage.setScene(scene);
 			stage.initStyle(StageStyle.TRANSPARENT);
 			stage.show();
@@ -94,7 +95,9 @@ public class ProjectRegistration {
 					availableProject.projectName = readerLine;
 					readerLine = reader.readLine();
 					availableProject.category = readerLine;
-					availableProject.accountIn = new AccountIn(reader.readLine(), email, username, false, password, null);
+					readerLine = reader.readLine();
+					availableProject.projectUrl = readerLine;
+					availableProject.accountIn = new AccountIn(availableProject.projectUrl, email, username, false, password, null);
 					readerLine = reader.readLine();
 					availableProject.description = readerLine;
 					availableProjects.add(availableProject);
@@ -104,14 +107,19 @@ public class ProjectRegistration {
 			} catch(IOException e) {
 				e.printStackTrace();
 			}
+			ArrayList<AvailableProject> projectsToRemove = new ArrayList<>();
 			if(usedProjects != null) {
 				for(AvailableProject availableProject : availableProjects) {
 					for(String name : usedProjects) {
-						if(name.equals(availableProject.projectName)) {
-							availableProjects.remove(availableProject);
+						if(name.equalsIgnoreCase(availableProject.projectUrl)) {
+							projectsToRemove.add(availableProject);
+							break;
 						}
 					}
 				}
+			}
+			for(AvailableProject projectToRemove : projectsToRemove) {
+				availableProjects.remove(projectToRemove);
 			}
 			if(Logging.INFO)
 				System.out.println("GRID: Read projects file\nGRID: Setting up project panels...");
@@ -153,6 +161,7 @@ public class ProjectRegistration {
 	
 	public static class AvailableProject {
 		public String projectName;
+		public String projectUrl;
 		public String description;
 		public String category;
 		public AccountIn accountIn;

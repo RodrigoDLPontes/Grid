@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
   </columnConstraints>
@@ -18,56 +21,110 @@
       <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
         <tabs>
           <Tab text="Tasks">
-               <content>
-                  <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
-                     <content>
-                        <GridPane fx:id="tasksPane" vgap="15.0">
-                           <padding>
-                              <Insets bottom="7.5" left="7.5" right="7.5" top="7.5" />
-                           </padding></GridPane>
-                     </content></ScrollPane>
-               </content>
+              <content>
+                   <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <center>
+                         <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+                             <content>
+                                 <GridPane fx:id="tasksPane" vgap="15.0">
+                                     <padding>
+                                         <Insets bottom="7.5" left="7.5" right="7.5" top="7.5" />
+                                     </padding></GridPane>
+                             </content>
+                         </ScrollPane>
+                     </center>
+                     <bottom>
+                        <Button fx:id="activityButton" mnemonicParsing="false" style="-fx-background-color: transparent;" BorderPane.alignment="CENTER">
+                           <graphic>
+                              <ImageView fx:id="activityButtonImageView" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic>
+                        </Button>
+                     </bottom>
+                   </BorderPane>
+              </content>
           </Tab>
             <Tab text="Projects">
                <content>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
-                     <content>
-                        <BorderPane prefHeight="200.0" prefWidth="200.0">
-                           <center>
-                              <GridPane fx:id="projectsPane" vgap="15.0" BorderPane.alignment="CENTER">
-                                 <padding>
-                                    <Insets bottom="7.5" left="7.5" right="7.5" top="7.5" />
-                                 </padding>
-                              </GridPane>
-                           </center>
-                           <bottom>
-                              <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                                 <children>
-                                    <Button fx:id="addProjectButton" mnemonicParsing="false" text="Add" />
-                                 </children>
-                              </HBox>
-                           </bottom>
-                        </BorderPane>
-                     </content>
-                  </ScrollPane>
+                   <BorderPane prefHeight="200.0" prefWidth="200.0">
+                       <center>
+                           <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+                               <content>
+                                   <GridPane fx:id="projectsPane" vgap="15.0" BorderPane.alignment="CENTER">
+                                       <padding>
+                                           <Insets bottom="7.5" left="7.5" right="7.5" top="7.5" />
+                                       </padding>
+                                   </GridPane>
+                               </content>
+                           </ScrollPane>
+                       </center>
+                     <bottom>
+                        <Button fx:id="addProjectButton" mnemonicParsing="false" style="-fx-background-color: transparent;" BorderPane.alignment="CENTER">
+                           <graphic>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../resources/Add.png" />
+                                 </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </bottom>
+                   </BorderPane>
                </content>
             </Tab>
-            <Tab text="Statistics">
+            <Tab text="Profile">
                <content>
                   <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
                      <content>
-                        <GridPane fx:id="statisticsPane">
+                        <GridPane fx:id="profilePane">
                            <padding>
                               <Insets bottom="7.5" left="7.5" right="7.5" top="7.5" />
                            </padding>
+                           <rowConstraints>
+                              <RowConstraints minHeight="100.0" valignment="TOP" />
+                              <RowConstraints minHeight="25.0" valignment="TOP" />
+                           </rowConstraints>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <children>
+                              <VBox alignment="CENTER_LEFT" maxWidth="-Infinity">
+                                 <children>
+                                    <Label fx:id="usernameLabel" text="(Username)">
+                                       <font>
+                                          <Font size="36.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="totalCreditLabel" text="(Total credit)">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" maxWidth="-Infinity" GridPane.halignment="RIGHT">
+                                 <children>
+                                    <ImageView fx:id="rankImage" fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label fx:id="rankLabel" text="(Rank)">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font></Label>
+                                 </children>
+                              </VBox>
+                           </children>
                         </GridPane>
                      </content>
                   </ScrollPane>
                </content>
             </Tab>
         </tabs>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
       </TabPane>
-      <Label text="Grid v0.1.1" textFill="WHITE" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
+      <Label text="Grid v0.1.3" textFill="WHITE" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
       <MenuBar>
         <menus>
           <Menu mnemonicParsing="false" text="File">

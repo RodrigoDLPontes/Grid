@@ -27,6 +27,7 @@ public class DebugConsole {
 			loader.setController(new Controller());
 			Parent root = loader.load();
 			Scene scene = new Scene(root, 375, 250);
+			stage.setTitle("Debug Console");
 			stage.setScene(scene);
 			stage.setX(50);
 			stage.show();

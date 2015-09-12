@@ -2,9 +2,7 @@ package grid;
 
 import java.awt.*;
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.*;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -14,6 +12,11 @@ import edu.berkeley.boinc.rpc.CcStatus;
 import edu.berkeley.boinc.rpc.Project;
 import edu.berkeley.boinc.rpc.Result;
 import edu.berkeley.boinc.rpc.RpcClient;
+import facebook4j.Facebook;
+import facebook4j.FacebookException;
+import facebook4j.FacebookFactory;
+import facebook4j.PostUpdate;
+import facebook4j.auth.AccessToken;
 import insidefx.undecorator.Undecorator;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -44,6 +47,8 @@ import javafx.stage.StageStyle;
 public class MainWindow {
 
 	private static Stage stage;
+	private boolean usesFacebook = false;
+	private static Facebook facebook;
 
 	private static GridPane tasksPane;
 	private static GridPane projectsPane;
@@ -52,6 +57,21 @@ public class MainWindow {
 	private static ImageView activityButtonImageView;
 
 	public MainWindow() {
+//		try {
+//			File tokenFile = new File("C:\\ProgramData\\Grid\\token.cfg");
+//			if(tokenFile.exists()) {
+//				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(tokenFile)));
+//				usesFacebook = true;
+//				facebook = new FacebookFactory().getInstance();
+//				facebook.setOAuthAppId("", "");
+//				facebook.setOAuthAccessToken(new AccessToken(bufferedReader.readLine()));
+//				bufferedReader.close();
+//			}
+//		} catch(FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch(IOException e) {
+//			e.printStackTrace();
+//		}
 		try {
 			stage = new Stage();
 			FXMLLoader loader = new FXMLLoader();
@@ -93,6 +113,8 @@ public class MainWindow {
 		private Button activityButton;
 		@FXML
 		private Button addProjectButton;
+//		@FXML
+//		private Button shareButton;
 		@FXML
 		private ImageView activityButtonImageView;
 		@FXML
@@ -141,6 +163,7 @@ public class MainWindow {
 			try {
 				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
 						new FileInputStream(new File("C:\\ProgramData\\Grid\\userInfo.cfg"))));
+				bufferedReader.readLine();
 				usernameLabel.setText(bufferedReader.readLine());
 				bufferedReader.close();
 			} catch(FileNotFoundException e) {
@@ -153,6 +176,11 @@ public class MainWindow {
 				totalCredit += project.user_total_credit;
 			}
 			totalCreditLabel.setText("Total credit: " + new DecimalFormat("#.##").format(totalCredit));
+//			if(usesFacebook) {
+//				shareButton.setOnAction(new ActionEventHandler());
+//			} else {
+//				((VBox) shareButton.getParent()).getChildren().remove(shareButton);
+//			}
 			if(0 <= totalCredit && totalCredit < 1000) {
 				rankLabel.setText("Rank 1");
 				rankImage.setImage(new Image("/resources/1.png"));
@@ -483,8 +511,39 @@ public class MainWindow {
 					for(Project project : Grid.rpcClient.getProjectStatus()) {
 						usedProjects.add(project.master_url);
 					}
-					NewProjectRegistrationPrompt newProjectRegistrationPrompt = new NewProjectRegistrationPrompt(stage, usedProjects);
-				}
+					BufferedReader bufferedReader;
+					Boolean usesFacebook = false;
+					String username = null, email = null, password = null;
+					try {
+						bufferedReader = new BufferedReader(new InputStreamReader(
+								new FileInputStream(new File("C:\\ProgramData\\Grid\\userInfo.cfg"))));
+						usesFacebook = Boolean.parseBoolean(bufferedReader.readLine());
+						username = bufferedReader.readLine();
+						email = bufferedReader.readLine();
+						password = bufferedReader.readLine();
+					} catch(FileNotFoundException e) {
+						e.printStackTrace();
+					} catch(IOException e) {
+						e.printStackTrace();
+					}
+					if(usesFacebook) {
+						new ProjectRegistration(username, email, password, false, usedProjects);
+					} else {
+						new NewProjectRegistrationPrompt(stage, usedProjects);
+					}
+				}// else if(((Button) event.getSource()).getId().equals("shareButton")) {
+//					try {
+//						facebook.postFeed(new PostUpdate(new URL("https://www.facebook.com/Grid-Volunteer-Computing-569226836548850/"))
+//								.picture(new URL("https://scontent-gru1-1.xx.fbcdn.net/hphotos-xaf1/v/t1.0-9/11954782_569227213215479_460999787230330965_n.jpg?oh=809f3f0ca26269a4dd59c47755ea696c&oe=5670A317"))
+//								.name("Grid - Help change the world. Join the Grid.")
+//								.caption("Use your computer to solve mankind's greatest challenges")
+//								.description("Grid is a platform in which you can donate computer resources to help advance scientific research."));
+//					} catch(FacebookException e) {
+//						e.printStackTrace();
+//					} catch(MalformedURLException e) {
+//						e.printStackTrace();
+//					}
+//				}
 			}
 		}
 	}

@@ -1,11 +1,17 @@
 package grid;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -45,5 +51,10 @@ public class PasswordEncryption {
 		KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, 100000, 160);
 		SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 		return secretKeyFactory.generateSecret(keySpec).getEncoded();
+	}
+
+	public static String toHex(byte[] encodedPassword) {
+		BigInteger hex = new BigInteger(1, encodedPassword);
+		return hex.toString(16);
 	}
 }

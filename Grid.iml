@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="Undecorator" level="project" />
+    <orderEntry type="library" exported="" name="facebook4j-core-2.3.0" level="project" />
   </component>
 </module>

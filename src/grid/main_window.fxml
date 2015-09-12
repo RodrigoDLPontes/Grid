@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
   </columnConstraints>
@@ -83,8 +83,7 @@
                               <Insets bottom="7.5" left="7.5" right="7.5" top="7.5" />
                            </padding>
                            <rowConstraints>
-                              <RowConstraints minHeight="100.0" valignment="TOP" />
-                              <RowConstraints minHeight="25.0" valignment="TOP" />
+                              <RowConstraints valignment="TOP" />
                            </rowConstraints>
                            <columnConstraints>
                               <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
@@ -102,6 +101,7 @@
                                           <Font size="18.0" />
                                        </font>
                                     </Label>
+                                    <Button fx:id="shareButton" mnemonicParsing="false" style="-fx-background-color: transparent;" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER" maxWidth="-Infinity" GridPane.halignment="RIGHT">

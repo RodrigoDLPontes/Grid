@@ -36,6 +36,10 @@
     visibility: hidden;
 }
 
+.web-view > .scroll-bar {
+	-fx-background-color: #FFFFFF;
+}
+
 .tab-pane {
 	-fx-background: #262626;
 }
